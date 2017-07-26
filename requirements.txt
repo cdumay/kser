@@ -1,0 +1,3 @@
+marshmallow
+confluent-kafka[avro]
+cdumay-rest-client
