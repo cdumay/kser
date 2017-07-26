@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-log-engine
+
 """
 
 from setuptools import setup, find_packages
@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 setup(
     name='kser',
     version=open('VERSION', 'r').read().strip(),
-    description="Log engine",
+    description="Kafka serialize python library",
     long_description=open('README.rst', 'r').read().strip(),
     classifiers=["Programming Language :: Python", ],
     keywords='',
