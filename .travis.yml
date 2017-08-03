@@ -1,0 +1,13 @@
+language: python
+python:
+- 3.5
+script:
+- python setup.py build
+deploy:
+  provider: pypi
+  user: cdumay
+  password:
+    secure: LNRE/bR0hLSy+al14mtXkDvO5onVcQ0dKxJY3aFdXxUyNzZH4ocykbPc75w5aCcn37KUV12OtssMlu85yRdkpgNAuHNXNsuibASKWwJ5d67IaoLEeM3xr0aTuTffHh7PdDWKRc68hSsPw1Lx7vN/TSYVbgD0Zc910hxJyUXYD6Iayi5JVXQddEf8eu/zqjWe4ab83QKRcuP7YO9CWY6sM65wxVabthY3TMZ71xDt+ScsuMqMA93uHPuGDDcaOCcG7Geplb10JP4DpBs5TOmOZrLhlU1Ll1JoAk/YxQVDkDRj3Cjvm3IPLBkzYpY2Imfj7335X+Npn0s4dGn/HXliSmr57VJujiqni9v6Mn4nLkEa0q0ltyXE49ndBWUTPw6M++BGdp1TISmEOJzYqOOW9P2YgAG8XN6sPqDmD86JzeLSSP9piEKbCYs5PSItYAFMuw/xa6P85BbZmf7De9Fq2Uy0QJxXD/2JRG603oRkcy35SauYyLAriJWWfE8zIizy4kSzGRqj6fa96YKsn0SldAIKDlbC24daa4yqtfi2iVxP1SNehmclQXIkIyBX9ND3TMtdZc91T/+aTm9tj1KBBQAhqjjMtVS9/d22s4IxdZu1NbD9jSOZ2DM7+p8htn6AYZDQgZ1f7Aa2GgJkncSyK+3cFkv5QSQdzdmqnQXvQTk=
+  on:
+    tags: true
+    repo: cdumay/kser
