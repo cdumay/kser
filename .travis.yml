@@ -2,7 +2,7 @@ language: python
 python:
 - 3.5
 script:
-- python setup.py build
+- python setup.py sdist
 deploy:
   provider: pypi
   user: cdumay
