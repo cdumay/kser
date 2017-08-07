@@ -10,7 +10,7 @@ import logging
 from cdumay_rest_client.exceptions import ValidationError
 from kser import BaseTransportSerializer
 from kser.entry import Entrypoint
-from kser.result import Result
+from cdumay_result import Result
 from kser.transport import Message
 
 logger = logging.getLogger("kser")

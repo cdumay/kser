@@ -64,7 +64,7 @@ Example::
 
     from kser import __hostname__
     from kser.entry import Entrypoint
-    from kser.result import Result
+    from cdumay_result import Result
 
 
     class Hello(Entrypoint):

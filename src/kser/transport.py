@@ -8,7 +8,7 @@
 """
 from marshmallow import Schema, fields
 from cdumay_rest_client.exceptions import ValidationError
-from kser.result import ResultSchema, Result
+from cdumay_result import ResultSchema, Result
 
 
 class BaseSchema(Schema):

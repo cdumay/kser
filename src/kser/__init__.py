@@ -7,17 +7,11 @@
 
 """
 import logging
-from uuid import uuid4
 import socket
 
 __hostname__ = socket.gethostname()
 
 logger = logging.getLogger("kser")
-
-
-def random_uuid():
-    """description of random_uuid"""
-    return str(uuid4())
 
 
 class BaseSerializer(object):

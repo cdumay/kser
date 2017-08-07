@@ -9,7 +9,7 @@
 import logging
 
 from kser import BaseSerializer
-from kser.result import Result
+from cdumay_result import Result
 
 logger = logging.getLogger("kser")
 

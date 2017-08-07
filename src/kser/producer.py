@@ -9,7 +9,7 @@
 import logging
 from confluent_kafka import Producer as ConfluentProducer
 from kser import BaseTransportSerializer
-from kser.result import Result
+from cdumay_result import Result
 
 logger = logging.getLogger("kser")
 
