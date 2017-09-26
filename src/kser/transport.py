@@ -18,7 +18,7 @@ class BaseSchema(Schema):
 
 
 class Base(object):
-    MARSHMALLOW_SCHEMA = BaseSchema
+    MARSHMALLOW_SCHEMA = BaseSchema()
 
     def __init__(self, uuid, entrypoint, params=None):
         self.uuid = uuid
@@ -74,9 +74,7 @@ class Message(Base):
         return cls(**data)
 
     def __init__(self, uuid, entrypoint, params=None, result=None, route=None):
-        self.uuid = uuid
-        self.entrypoint = entrypoint
-        self.params = params if params else dict()
+        Base.__init__(self, uuid, entrypoint, params)
         if result:
             if isinstance(result, Result):
                 self.result = result

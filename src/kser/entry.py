@@ -14,7 +14,13 @@ from cdumay_result import Result
 logger = logging.getLogger("kser")
 
 
-class Entrypoint(BaseSerializer):
+class EntrypointMeta(type):
+    @property
+    def path(cls):
+        return "{}.{}".format(cls.__module__, cls.__name__)
+
+
+class Entrypoint(BaseSerializer, metaclass=EntrypointMeta):
     @classmethod
     def _prerun(cls, kmsg):
         """ To execute before running message
