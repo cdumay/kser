@@ -7,7 +7,7 @@
 
 """
 import logging
-from confluent_kafka import Producer as ConfluentProducer
+from kafka import KafkaProducer
 from kser import BaseTransportSerializer
 from cdumay_result import Result
 
@@ -20,16 +20,9 @@ class Producer(BaseTransportSerializer):
 
         :param dict config: configuration
         """
-        cfg = {
-            'ssl.ca.location': '/etc/ssl/certs',
-            'security.protocol': 'sasl_ssl',
-            'api.version.request': True,
-            'sasl.mechanisms': "PLAIN"
-        }
-        cfg.update(config or dict())
-        self.client = ConfluentProducer(cfg)
+        self.client = KafkaProducer(**config)
 
-    def send(self, topic, kmsg):
+    def send(self, topic, kmsg, timeout=60):
         """ Send the message into the given topic
 
         :param str topic: a kafka topic
@@ -37,14 +30,13 @@ class Producer(BaseTransportSerializer):
         :return: Execution result
         :rtype: kser.result.Result
         """
+        result = Result(uuid=kmsg.uuid)
         try:
-            self.client.produce(topic, self._onmessage(kmsg).dumps())
-            self.client.flush()
-
-            result = Result(
-                uuid=kmsg.uuid, stdout="Message sent: {} ({})".format(
-                    kmsg.uuid, kmsg.entrypoint
-                )
+            future = self.client.send(
+                topic, self._onmessage(kmsg).dumps().encode("UTF-8")
+            )
+            result.stdout = "Message {}[{}]: {}".format(
+                kmsg.entrypoint, kmsg.uuid, future.get(timeout=60)
             )
 
         except Exception as exc:
