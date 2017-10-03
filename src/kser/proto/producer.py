@@ -36,7 +36,7 @@ class Producer(BaseTransportSerializer):
                 topic, self._onmessage(kmsg).dumps().encode("UTF-8")
             )
             result.stdout = "Message {}[{}]: {}".format(
-                kmsg.entrypoint, kmsg.uuid, future.get(timeout=60)
+                kmsg.entrypoint, kmsg.uuid, future.get(timeout=timeout)
             )
 
         except Exception as exc:
