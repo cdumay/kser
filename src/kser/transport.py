@@ -85,7 +85,7 @@ class Message(Base):
 
         if route:
             if isinstance(route, Route):
-                self.route = Route
+                self.route = route
             else:
                 self.route = Route(**route)
         else:
