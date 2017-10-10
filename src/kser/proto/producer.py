@@ -6,12 +6,9 @@
 
 
 """
-import logging
 from kafka import KafkaProducer
 from kser import BaseTransportSerializer
 from cdumay_result import Result
-
-logger = logging.getLogger("kser")
 
 
 class Producer(BaseTransportSerializer):

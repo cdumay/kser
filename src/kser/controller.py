@@ -97,13 +97,13 @@ class Controller(BaseTransportSerializer):
 
             result = cls.ENTRYPOINTS[kmsg.entrypoint].execute(kmsg)
 
-            if kmsg.route:
-                cls._onforward(kmsg, result)
-
         except Exception as exc:
             result = Result.fromException(exc, kmsg.uuid)
 
         finally:
+            if kmsg.route:
+                cls._onforward(kmsg, result)
+
             if result.retcode < 300:
                 return cls._onsuccess(kmsg=kmsg, result=result)
             else:

@@ -6,12 +6,9 @@
 
 
 """
-import logging
 from kser import BaseTransportSerializer
 from cdumay_result import Result
 from cdumay_rest_client.client import RESTClient
-
-logger = logging.getLogger("kser")
 
 
 class Producer(BaseTransportSerializer):
