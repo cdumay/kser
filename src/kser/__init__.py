@@ -51,7 +51,7 @@ class BaseSerializer(object):
         """
         logger.error("{}.Failed: {}[{}]: {}".format(
             cls.__name__, kmsg.entrypoint, kmsg.uuid, result
-        ))
+        ), extra=result.retval)
         return cls.onerror(kmsg, result)
 
     @classmethod
