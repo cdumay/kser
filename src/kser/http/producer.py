@@ -23,6 +23,26 @@ class Producer(BaseTransportSerializer):
             timeout=config.get("timeout", 10)
         )
 
+    def bulk_send(self, topic, kmsgs):
+        """ Send a batch of messages
+
+        :param str topic: a kafka topic
+        :param ksr.transport.Message kmsgs: Messages to serialize
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+
+        try:
+            self.client.do_request(
+                method="POST", path="/topic/{}".format(topic), data=[
+                    dict(Value=k.MARSHMALLOW_SCHEMA.dump(k).data) for k in kmsgs
+                ]
+            )
+            return Result(stdout="{} message(s) sent".format(len(kmsgs)))
+
+        except Exception as exc:
+            return Result.fromException(exc)
+
     def send(self, topic, kmsg):
         """ Send the message into the given topic
 
