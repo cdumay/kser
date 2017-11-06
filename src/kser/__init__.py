@@ -11,7 +11,7 @@ import socket
 
 __hostname__ = socket.gethostname()
 
-logger = logging.getLogger("kser")
+logger = logging.getLogger(__name__)
 
 
 class BaseSerializer(object):

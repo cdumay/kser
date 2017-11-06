@@ -11,7 +11,7 @@ import logging
 from cdumay_rest_client.client import RESTClient
 from kser.controller import Controller
 
-logger = logging.getLogger("kser")
+logger = logging.getLogger(__name__)
 
 
 class LoopInfo(object):

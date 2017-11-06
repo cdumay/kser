@@ -11,7 +11,7 @@ import logging
 from kser import BaseSerializer
 from cdumay_result import Result
 
-logger = logging.getLogger("kser")
+logger = logging.getLogger(__name__)
 
 
 class EntrypointMeta(type):

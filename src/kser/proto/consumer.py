@@ -10,7 +10,7 @@ import logging
 from kafka import KafkaConsumer
 from kser.controller import Controller
 
-logger = logging.getLogger("kser")
+logger = logging.getLogger(__name__)
 
 
 class Consumer(object):
