@@ -7,9 +7,11 @@
 
 """
 import logging
+from uuid import uuid4
 
 from kser import BaseSerializer
 from cdumay_result import Result
+from kser.transport import Message
 
 logger = logging.getLogger(__name__)
 
@@ -114,3 +116,14 @@ class Entrypoint(BaseSerializer, metaclass=EntrypointMeta):
 
         finally:
             return result
+
+    @classmethod
+    def as_kmsg(cls, uuid=None, params=None, result=None):
+        if not uuid:
+            uuid = str(uuid4())
+        if not params:
+            params = dict()
+
+        return Message(
+            uuid=uuid, entrypoint=cls.path, params=params, result=result
+        )
