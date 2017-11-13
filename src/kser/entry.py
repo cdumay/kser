@@ -129,5 +129,5 @@ class Entrypoint(BaseSerializer, metaclass=EntrypointMeta):
         )
 
     @classmethod
-    def self_execute(cls, uuid=None, params=None, result=None):
-        return cls.execute(cls.as_kmsg(uuid=uuid, params=params, result=result))
+    def self_execute(cls, uuid=None, result=None, **kwargs):
+        return cls.execute(cls.as_kmsg(uuid=uuid, params=kwargs, result=result))
