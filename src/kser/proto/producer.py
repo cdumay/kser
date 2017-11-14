@@ -6,14 +6,12 @@
 
 
 """
-import json
-
 from kafka import KafkaProducer
-from kser import BaseTransportSerializer
 from cdumay_result import Result
+from kser.controller import BaseController
 
 
-class Producer(BaseTransportSerializer):
+class Producer(BaseController):
     def __init__(self, config):
         """ Create new Producer instance using provided configuration dict.
 

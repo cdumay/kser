@@ -6,12 +6,12 @@
 
 
 """
-from kser import BaseTransportSerializer
+from kser.controller import BaseController
 from cdumay_result import Result
 from cdumay_rest_client.client import RESTClient
 
 
-class Producer(BaseTransportSerializer):
+class Producer(BaseController):
     def __init__(self, config):
         """ Create new Producer instance using provided configuration dict.
 
@@ -67,6 +67,7 @@ class Producer(BaseTransportSerializer):
             result = Result.fromException(exc, kmsg.uuid)
 
         finally:
+            # noinspection PyUnboundLocalVariable
             if result.retcode < 300:
                 return self._onsuccess(kmsg=kmsg, result=result)
             else:

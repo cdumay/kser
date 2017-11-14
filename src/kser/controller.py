@@ -8,15 +8,91 @@
 """
 import logging
 from cdumay_rest_client.exceptions import ValidationError
-from kser import BaseTransportSerializer
 from kser.entry import Entrypoint
 from cdumay_result import Result
-from kser.transport import Message
+from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
 
 
-class Controller(BaseTransportSerializer):
+class BaseController(object):
+    @classmethod
+    def _onsuccess(cls, kmsg, result):
+        """ To execute on execution success
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        logger.info("{}.Success: {}[{}]: {}".format(
+            cls.__name__, kmsg.entrypoint, kmsg.uuid, result
+        ))
+        return cls.onsuccess(kmsg, result)
+
+    # noinspection PyUnusedLocal
+    @classmethod
+    def onsuccess(cls, kmsg, result):
+        """ To execute on execution success
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        return result
+
+    @classmethod
+    def _onerror(cls, kmsg, result):
+        """ To execute on execution failure
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        logger.error("{}.Failed: {}[{}]: {}".format(
+            cls.__name__, kmsg.entrypoint, kmsg.uuid, result
+        ), extra=result.retval)
+        return cls.onerror(kmsg, result)
+
+    # noinspection PyUnusedLocal
+    @classmethod
+    def onerror(cls, kmsg, result):
+        """ To implement
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        return result
+
+    @classmethod
+    def _onmessage(cls, kmsg):
+        """ Call on received message
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :return: Kafka message
+        :rtype: kser.schemas.Message
+        """
+        logger.debug("{}.ReceivedMessage: {}[{}]".format(
+            cls.__name__, kmsg.entrypoint, kmsg.uuid
+        ))
+        return cls.onmessage(kmsg)
+
+    @classmethod
+    def onmessage(cls, kmsg):
+        """ To implement
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :return: Kafka message
+        :rtype: kser.schemas.Message
+        """
+        return kmsg
+
+
+class Controller(BaseController):
     ENTRYPOINTS = dict()
     TRANSPORT = Message
 
@@ -24,7 +100,7 @@ class Controller(BaseTransportSerializer):
     def _onforward(cls, kmsg, result):
         """ To execute on execution forward
 
-        :param kser.transport.Message kmsg: Kafka message
+        :param kser.schemas.Message kmsg: Kafka message
         :param kser.result.Result result: Execution result
         :return: Execution result
         :rtype: kser.result.Result
@@ -45,7 +121,7 @@ class Controller(BaseTransportSerializer):
     def onforward(cls, kmsg):
         """ To execute on execution forward
 
-        :param kser.transport.Message kmsg: Kafka message
+        :param kser.schemas.Message kmsg: Kafka message
         :return: Execution result
         :rtype: kser.result.Result
         """
@@ -102,6 +178,7 @@ class Controller(BaseTransportSerializer):
 
         finally:
             if kmsg.route:
+                # noinspection PyUnboundLocalVariable
                 cls._onforward(kmsg, result)
 
             if result.retcode < 300:

@@ -8,10 +8,9 @@
 """
 import logging
 from uuid import uuid4
-
-from kser import BaseSerializer
 from cdumay_result import Result
-from kser.transport import Message
+
+from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
 
@@ -22,112 +21,150 @@ class EntrypointMeta(type):
         return "{}.{}".format(cls.__module__, cls.__name__)
 
 
-class Entrypoint(BaseSerializer, metaclass=EntrypointMeta):
-    @classmethod
-    def _prerun(cls, kmsg):
-        """ To execute before running message
+class Entrypoint(object, metaclass=EntrypointMeta):
+    def __init__(self, uuid=None, params=None, result=None):
+        if not uuid:
+            uuid = str(uuid4())
+        if not params:
+            params = dict()
+        if not result:
+            result = Result(uuid=uuid)
 
-        :param kser.transport.Message kmsg: Kafka message
-        :return: Kafka message
-        :rtype: kser.transport.Message
-        """
-        logger.debug("{}.PreRun: {}[{}]".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid
-        ))
-        return cls.prerun(kmsg)
+        self.uuid = uuid
+        self.params = params
+        self.result = result
 
-    @classmethod
-    def prerun(cls, kmsg):
-        """ To implement
+    def _onsuccess(self, result):
+        """ To execute on execution success
 
-        :param kser.transport.Message kmsg: Kafka message
-        :return: Kafka message
-        :rtype: kser.transport.Message
-        """
-        return kmsg
-
-    @classmethod
-    def _postrun(cls, kmsg, result):
-        """ To execute after exection
-
-        :param kser.transport.Message kmsg: Kafka message
         :param kser.result.Result result: Execution result
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug("{}.PostRun: {}[{}]".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid
+        logger.info("{}.Success: {}[{}]: {}".format(
+            self.__class__.__name__, self.__class__.path, self.uuid, result
         ))
-        return cls.postrun(kmsg, result)
+        return self.onsuccess(result)
 
-    @classmethod
-    def postrun(cls, kmsg, result):
-        """ To implement
+    def onsuccess(self, result):
+        """ To execute on execution success
 
-        :param kser.transport.Message kmsg: Kafka message
         :param kser.result.Result result: Execution result
         :return: Execution result
         :rtype: kser.result.Result
         """
         return result
 
-    @classmethod
-    def _run(cls, kmsg):
+    def _onerror(self, result):
+        """ To execute on execution failure
+
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        logger.error("{}.Failed: {}[{}]: {}".format(
+            self.__class__.__name__, self.__class__.path, self.uuid, result
+        ), extra=result.retval)
+        return self.onerror(result)
+
+    def onerror(self, result):
+        """ To implement
+
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        return result
+
+    def _prerun(self):
+        """ To execute before running message
+
+        :return: Kafka message
+        :rtype: kser.schemas.Message
+        """
+        logger.debug("{}.PreRun: {}[{}]".format(
+            self.__class__.__name__, self.__class__.path, self.uuid
+        ))
+        return self.prerun()
+
+    def prerun(self):
+        """ To implement"""
+
+    def _postrun(self, result):
+        """ To execute after exection
+
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        logger.debug("{}.PostRun: {}[{}]".format(
+            self.__class__.__name__, self.__class__.path, self.uuid
+        ))
+        return self.postrun(result)
+
+    def postrun(self, result):
+        """ To implement
+
+        :param kser.result.Result result: Execution result
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        return result
+
+    def _run(self):
         """ Execution body
 
-        :param kser.transport.Message kmsg: Kafka message
         :return: Execution result
         :rtype: kser.result.Result
         """
         logger.debug("{}.Run: {}[{}]".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid
+            self.__class__.__name__, self.__class__.path, self.uuid
         ))
-        return cls.run(uuid=kmsg.uuid, result=kmsg.result, **kmsg.params)
+        return self.run()
 
-    @classmethod
-    def run(cls, uuid, result, **kwargs):
+    def run(self):
         """ To implement
 
-        :param str uuid: Message UUID
-        :param kser.result.Result result: Previous result
-        :param dict kwargs: Parameters
         :return: Execution result
         :rtype: kser.result.Result
         """
-        return Result(uuid=uuid, retval=kwargs)
+        return Result(uuid=self.uuid)
 
-    @classmethod
-    def execute(cls, kmsg):
+    def execute(self):
         """ Execution 'wrapper' to make sure that it return a result
 
-        :param kser.transport.Message kmsg: Kafka message
         :return: Execution result
         :rtype: kser.result.Result
         """
         try:
-            result = cls._onsuccess(
-                kmsg, cls._postrun(kmsg, cls._run(cls._prerun(kmsg)))
-            )
+            self._prerun()
+            result = self._onsuccess(self._postrun(self._run()))
 
         except Exception as exc:
-            result = cls._onerror(
-                kmsg, Result.fromException(exc, uuid=kmsg.uuid)
-            )
+            result = self._onerror(Result.fromException(exc, uuid=self.uuid))
 
         finally:
+            # noinspection PyUnboundLocalVariable
             return result
 
-    @classmethod
-    def as_kmsg(cls, uuid=None, params=None, result=None):
-        if not uuid:
-            uuid = str(uuid4())
-        if not params:
-            params = dict()
+    def to_Message(self, result=None):
+        """ Entrypoint -> Message
 
+        :param kser.result.Result result: Execution result
+        :return: Kafka message
+        :rtype kser.schemas.Message
+        """
         return Message(
-            uuid=uuid, entrypoint=cls.path, params=params, result=result
+            uuid=self.uuid, entrypoint=self.__class__.path, params=self.params,
+            result=self.result if self.result else result
         )
 
     @classmethod
-    def self_execute(cls, uuid=None, result=None, **kwargs):
-        return cls.execute(cls.as_kmsg(uuid=uuid, params=kwargs, result=result))
+    def from_Message(cls, kmsg):
+        """ Message -> Entrypoint
+
+        :param kser.schemas.Message kmsg: Kafka message
+        :return: a entrypoint
+        :rtype kser.entry.Entrypoint
+        """
+        return cls(uuid=kmsg.uuid, params=kmsg.params, result=kmsg.result)
