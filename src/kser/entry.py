@@ -130,6 +130,15 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         """
         return Result(uuid=self.uuid)
 
+    def unsafe_execute(self):
+        """ un-wrapped execution, can raise excepetion
+
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        self._prerun()
+        return self._onsuccess(self._postrun(self._run()))
+
     def execute(self):
         """ Execution 'wrapper' to make sure that it return a result
 
@@ -137,8 +146,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :rtype: kser.result.Result
         """
         try:
-            self._prerun()
-            result = self._onsuccess(self._postrun(self._run()))
+            result = self.unsafe_execute()
 
         except Exception as exc:
             result = self._onerror(Result.fromException(exc, uuid=self.uuid))
