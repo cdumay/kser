@@ -9,7 +9,7 @@
 import logging
 from uuid import uuid4
 from cdumay_result import Result
-
+from cdumay_rest_client.exceptions import NotImplemented
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
@@ -128,7 +128,9 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        return Result(uuid=self.uuid)
+        raise NotImplemented("Task '{}' not implemented".format(
+            self.__class__.path
+        ))
 
     def unsafe_execute(self):
         """ un-wrapped execution, can raise excepetion
