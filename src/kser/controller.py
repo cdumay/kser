@@ -171,7 +171,9 @@ class Controller(BaseController):
                     )
                 )
 
-            result = cls.ENTRYPOINTS[kmsg.entrypoint].execute(kmsg)
+            result = cls.ENTRYPOINTS[kmsg.entrypoint].from_Message(
+                kmsg
+            ).execute()
 
         except Exception as exc:
             result = Result.fromException(exc, kmsg.uuid)
