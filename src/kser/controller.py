@@ -25,7 +25,7 @@ class BaseController(object):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.info("{}.Success: {}[{}]: {}".format(
+        logger.debug("{}.Success: {}[{}]: {}".format(
             cls.__name__, kmsg.entrypoint, kmsg.uuid, result
         ))
         return cls.onsuccess(kmsg, result)
@@ -105,14 +105,14 @@ class Controller(BaseController):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.info("{}.Forward: {}[{}]: {}".format(
+        logger.debug("{}.Forward: {}[{}]: {}".format(
             cls.__name__, kmsg.entrypoint, kmsg.uuid, result
         ))
         new_kmsg = cls.TRANSPORT(
             uuid=kmsg.route.uuid, entrypoint=kmsg.route.entrypoint,
             params=kmsg.route.params, result=result
         )
-        logger.info("{}.ForwardTo: {}[{}]: {}".format(
+        logger.debug("{}.ForwardTo: {}[{}]: {}".format(
             cls.__name__, new_kmsg.entrypoint, new_kmsg.uuid, new_kmsg.result
         ))
         return cls.onforward(new_kmsg)
