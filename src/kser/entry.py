@@ -166,7 +166,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         """
         return Message(
             uuid=self.uuid, entrypoint=self.__class__.path, params=self.params,
-            result=self.result if self.result else result
+            result=result if result else self.result
         )
 
     @classmethod
