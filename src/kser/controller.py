@@ -76,8 +76,9 @@ class BaseController(object):
         :return: Kafka message
         :rtype: kser.schemas.Message
         """
-        logger.debug("{}.ReceivedMessage: {}[{}]".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid
+        logger.debug("{}.ReceivedMessage {}[{}]: {}".format(
+            cls.__name__, kmsg.entrypoint, kmsg.uuid,
+            kmsg.MARSHMALLOW_SCHEMA.dump(kmsg).data
         ))
         return cls.onmessage(kmsg)
 
