@@ -152,7 +152,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :rtype: kser.result.Result
         """
         try:
-            result = self.unsafe_execute()
+            result = self.unsafe_execute(result=result)
 
         except Exception as exc:
             result = self._onerror(Result.fromException(exc, uuid=self.uuid))
