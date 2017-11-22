@@ -184,7 +184,7 @@ class Controller(BaseController):
                 # noinspection PyUnboundLocalVariable
                 cls._onforward(kmsg, result)
 
-            if result.retcode < 300:
+            if result and result.retcode < 300:
                 return cls._onsuccess(kmsg=kmsg, result=result)
             else:
                 return cls._onerror(kmsg=kmsg, result=result)
