@@ -53,7 +53,7 @@ class BaseController(object):
         """
         logger.error("{}.Failed: {}[{}]: {}".format(
             cls.__name__, kmsg.entrypoint, kmsg.uuid, result
-        ), extra=result.retval)
+        ), extra=getattr(result, 'retval', dict()))
         return cls.onerror(kmsg, result)
 
     # noinspection PyUnusedLocal
