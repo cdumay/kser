@@ -133,16 +133,19 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             self.__class__.path
         ))
 
-    def unsafe_execute(self):
+    def unsafe_execute(self, result=None):
         """ un-wrapped execution, can raise excepetion
 
         :return: Execution result
         :rtype: kser.result.Result
         """
+        if result:
+            self.result += result
+
         self._prerun()
         return self._onsuccess(self._postrun(self._run()))
 
-    def execute(self):
+    def execute(self, result=None):
         """ Execution 'wrapper' to make sure that it return a result
 
         :return: Execution result
