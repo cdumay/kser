@@ -105,17 +105,14 @@ class Entrypoint(BaseSerializer, metaclass=EntrypointMeta):
         :rtype: kser.result.Result
         """
         try:
-            result = cls._onsuccess(
+            return cls._onsuccess(
                 kmsg, cls._postrun(kmsg, cls._run(cls._prerun(kmsg)))
             )
 
         except Exception as exc:
-            result = cls._onerror(
+            return cls._onerror(
                 kmsg, Result.fromException(exc, uuid=kmsg.uuid)
             )
-
-        finally:
-            return result
 
     @classmethod
     def as_kmsg(cls, uuid=None, params=None, result=None):

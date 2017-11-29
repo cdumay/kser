@@ -101,10 +101,9 @@ class Controller(BaseTransportSerializer):
             result = Result.fromException(exc, kmsg.uuid)
 
         finally:
-            if kmsg.route:
-                cls._onforward(kmsg, result)
-
             if result.retcode < 300:
+                if kmsg.route:
+                    cls._onforward(kmsg, result)
                 return cls._onsuccess(kmsg=kmsg, result=result)
             else:
                 return cls._onerror(kmsg=kmsg, result=result)
