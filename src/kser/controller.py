@@ -180,11 +180,11 @@ class Controller(BaseController):
             result = Result.fromException(exc, kmsg.uuid)
 
         finally:
-            if kmsg.route:
-                # noinspection PyUnboundLocalVariable
-                cls._onforward(kmsg, result)
-
+            # noinspection PyUnboundLocalVariable
             if result and result.retcode < 300:
+                if kmsg.route:
+                    cls._onforward(kmsg, result)
+
                 return cls._onsuccess(kmsg=kmsg, result=result)
             else:
                 return cls._onerror(kmsg=kmsg, result=result)

@@ -152,14 +152,9 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :rtype: kser.result.Result
         """
         try:
-            result = self.unsafe_execute(result=result)
-
+            return self.unsafe_execute(result=result)
         except Exception as exc:
-            result = self._onerror(Result.fromException(exc, uuid=self.uuid))
-
-        finally:
-            # noinspection PyUnboundLocalVariable
-            return result
+            return self._onerror(Result.fromException(exc, uuid=self.uuid))
 
     def to_Message(self, result=None):
         """ Entrypoint -> Message
