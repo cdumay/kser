@@ -9,7 +9,7 @@
 import logging
 from uuid import uuid4
 from cdumay_result import Result
-from cdumay_rest_client.exceptions import NotImplemented
+from cdumay_rest_client.exceptions import NotImplemented, ValidationError
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,8 @@ class EntrypointMeta(type):
 
 
 class Entrypoint(object, metaclass=EntrypointMeta):
+    REQUIRED_FIELDS = ()
+
     def __init__(self, uuid=None, params=None, result=None):
         if not uuid:
             uuid = str(uuid4())
@@ -33,6 +35,12 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         self.uuid = uuid
         self.params = params
         self.result = result
+
+    def check_required_params(self):
+        """ Check if all required parameters are set"""
+        for param in self.REQUIRED_FIELDS:
+            if param not in self.params:
+                raise ValidationError("Missing parameter: {}".format(param))
 
     def _onsuccess(self, result):
         """ To execute on execution success
@@ -86,6 +94,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         logger.debug("{}.PreRun: {}[{}]".format(
             self.__class__.__name__, self.__class__.path, self.uuid
         ))
+        self.check_required_params()
         return self.prerun()
 
     def prerun(self):
