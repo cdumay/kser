@@ -35,6 +35,17 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         self.uuid = uuid
         self.params = params
         self.result = result
+        self._post_init()
+
+    def _post_init(self):
+        """A post init trigger"""
+        try:
+            return self.postinit()
+        except Exception as exc:
+            return self._onerror(Result.fromException(exc, uuid=self.uuid))
+
+    def postinit(self):
+        """"""
 
     def check_required_params(self):
         """ Check if all required parameters are set"""
