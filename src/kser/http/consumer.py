@@ -24,8 +24,9 @@ class Consumer(object):
 
     def __init__(self, config, topics):
         self.client = RESTClient(
-            server=config["bootstrap.servers"],
-            username=config["sasl.username"], password=config["sasl.password"],
+            server=config["bootstrap_servers"],
+            username=config["sasl_plain_username"],
+            password=config["sasl_plain_password"],
             timeout=config.get("timeout", 10)
         )
         self.topics = topics
