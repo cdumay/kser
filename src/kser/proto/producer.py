@@ -6,7 +6,7 @@
 
 
 """
-from kafka import KafkaProducer
+from confluent_kafka import Producer as KafkaProducer
 from cdumay_result import Result
 from kser.controller import BaseController
 
@@ -17,7 +17,7 @@ class Producer(BaseController):
 
         :param dict config: configuration
         """
-        self.client = KafkaProducer(**config)
+        self.client = KafkaProducer(config)
 
     def bulk_send(self, topic, kmsgs, timeout=60):
         """ Send a batch of messages
@@ -51,12 +51,13 @@ class Producer(BaseController):
         """
         result = Result(uuid=kmsg.uuid)
         try:
-            future = self.client.send(
+            self.client.produce(
                 topic, self._onmessage(kmsg).dumps().encode("UTF-8")
             )
-            result.stdout = "Message {}[{}]: {}".format(
-                kmsg.entrypoint, kmsg.uuid, future.get(timeout=timeout)
+            result.stdout = "Message {}[{}] sent".format(
+                kmsg.entrypoint, kmsg.uuid
             )
+            self.client.flush()
 
         except Exception as exc:
             result = Result.fromException(exc, kmsg.uuid)

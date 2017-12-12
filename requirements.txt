@@ -1,4 +1,4 @@
 marshmallow
-kafka-python
+confluent-kafka
 cdumay-rest-client
 cdumay-result
