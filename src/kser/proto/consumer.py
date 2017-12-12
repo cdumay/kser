@@ -33,6 +33,4 @@ class Consumer(object):
                 elif msg.error().code() != KafkaError._PARTITION_EOF:
                     logger.error(msg.error())
                     running = False
-            else:
-                logger.error("Empty message ?!")
         self.client.close()
