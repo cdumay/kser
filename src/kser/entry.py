@@ -66,6 +66,12 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         ))
         return self.onsuccess(result)
 
+    def log(self, message, level=logging.INFO, *args, **kwargs):
+        msg = "{}.MESSAGE: {}[{}]: {}".format(
+            self.__class__.__name__, self.__class__.path, self.uuid, message
+        )
+        return logger.log(level=level, msg=msg, *args, **kwargs)
+
     def onsuccess(self, result):
         """ To execute on execution success
 
