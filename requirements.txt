@@ -1,4 +1,3 @@
 marshmallow
-confluent-kafka
 cdumay-rest-client
 cdumay-result
