@@ -9,7 +9,7 @@
 import logging
 from cdumay_rest_client.exceptions import ValidationError
 from kser.entry import Entrypoint
-from cdumay_result import Result
+from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
@@ -25,9 +25,15 @@ class BaseController(object):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug("{}.Success: {}[{}]: {}".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid, result
-        ))
+        logger.debug(
+            "{}.Success: {}[{}]: {}".format(
+                cls.__name__, kmsg.entrypoint, kmsg.uuid, result
+            ),
+            extra=dict(
+                kmsg=kmsg.dump(),
+                kresult=ResultSchema().dump(result).data if result else dict()
+            )
+        )
         return cls.onsuccess(kmsg, result)
 
     # noinspection PyUnusedLocal
@@ -51,9 +57,15 @@ class BaseController(object):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.error("{}.Failed: {}[{}]: {}".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid, result
-        ), extra=getattr(result, 'retval', dict()))
+        logger.error(
+            "{}.Failed: {}[{}]: {}".format(
+                cls.__name__, kmsg.entrypoint, kmsg.uuid, result
+            ),
+            extra=dict(
+                kmsg=kmsg.dump(),
+                kresult=ResultSchema().dump(result).data if result else dict()
+            )
+        )
         return cls.onerror(kmsg, result)
 
     # noinspection PyUnusedLocal
@@ -76,10 +88,12 @@ class BaseController(object):
         :return: Kafka message
         :rtype: kser.schemas.Message
         """
-        logger.debug("{}.ReceivedMessage {}[{}]: {}".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid,
-            kmsg.MARSHMALLOW_SCHEMA.dump(kmsg).data
-        ))
+        logger.debug(
+            "{}.ReceivedMessage {}[{}]".format(
+                cls.__name__, kmsg.entrypoint, kmsg.uuid
+            ),
+            extra=dict(kmsg=kmsg.dump())
+        )
         return cls.onmessage(kmsg)
 
     @classmethod
@@ -106,16 +120,25 @@ class Controller(BaseController):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug("{}.Forward: {}[{}]: {}".format(
-            cls.__name__, kmsg.entrypoint, kmsg.uuid, result
-        ))
+        logger.debug(
+            "{}.Forward: {}[{}]".format(
+                cls.__name__, kmsg.entrypoint, kmsg.uuid
+            ),
+            extra=dict(
+                kmsg=kmsg.dump(),
+                kresult=ResultSchema().dump(result).data if result else dict()
+            )
+        )
         new_kmsg = cls.TRANSPORT(
             uuid=kmsg.route.uuid, entrypoint=kmsg.route.entrypoint,
             params=kmsg.route.params, result=result
         )
-        logger.debug("{}.ForwardTo: {}[{}]: {}".format(
-            cls.__name__, new_kmsg.entrypoint, new_kmsg.uuid, new_kmsg.result
-        ))
+        logger.debug(
+            "{}.ForwardTo: {}[{}]".format(
+                cls.__name__, new_kmsg.entrypoint, new_kmsg.uuid
+            ),
+            extra=dict(kmsg=new_kmsg.dump())
+        )
         return cls.onforward(new_kmsg)
 
     @classmethod

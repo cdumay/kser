@@ -8,7 +8,7 @@
 """
 import logging
 from uuid import uuid4
-from cdumay_result import Result
+from cdumay_result import Result, ResultSchema
 from cdumay_rest_client.exceptions import NotImplemented, ValidationError
 from kser.schemas import Message
 
@@ -61,9 +61,18 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :rtype: kser.result.Result
         """
         result += self.result
-        logger.info("{}.Success: {}[{}]: {}".format(
-            self.__class__.__name__, self.__class__.path, self.uuid, result
-        ))
+        logger.info(
+            "{}.Success: {}[{}]: {}".format(
+                self.__class__.__name__, self.__class__.path, self.uuid, result
+            ),
+            extra=dict(
+                kmsg=Message(
+                    self.uuid, entrypoint=self.__class__.path,
+                    params=self.params
+                ),
+                kresult=ResultSchema().dump(result).data if result else dict()
+            )
+        )
         return self.onsuccess(result)
 
     def log(self, message, level=logging.INFO, *args, **kwargs):
@@ -88,9 +97,18 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.error("{}.Failed: {}[{}]: {}".format(
-            self.__class__.__name__, self.__class__.path, self.uuid, result
-        ), extra=result.retval)
+        logger.error(
+            "{}.Failed: {}[{}]: {}".format(
+                self.__class__.__name__, self.__class__.path, self.uuid, result
+            ),
+            extra=dict(
+                kmsg=Message(
+                    self.uuid, entrypoint=self.__class__.path,
+                    params=self.params
+                ),
+                kresult=ResultSchema().dump(result).data if result else dict()
+            )
+        )
         return self.onerror(result)
 
     def onerror(self, result):
@@ -108,9 +126,17 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Kafka message
         :rtype: kser.schemas.Message
         """
-        logger.debug("{}.PreRun: {}[{}]".format(
-            self.__class__.__name__, self.__class__.path, self.uuid
-        ))
+        logger.debug(
+            "{}.PreRun: {}[{}]".format(
+                self.__class__.__name__, self.__class__.path, self.uuid
+            ),
+            extra=dict(
+                kmsg=Message(
+                    self.uuid, entrypoint=self.__class__.path,
+                    params=self.params
+                )
+            )
+        )
         self.check_required_params()
         return self.prerun()
 
@@ -124,9 +150,17 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug("{}.PostRun: {}[{}]".format(
-            self.__class__.__name__, self.__class__.path, self.uuid
-        ))
+        logger.debug(
+            "{}.PostRun: {}[{}]".format(
+                self.__class__.__name__, self.__class__.path, self.uuid
+            ),
+            extra=dict(
+                kmsg=Message(
+                    self.uuid, entrypoint=self.__class__.path,
+                    params=self.params
+                )
+            )
+        )
         return self.postrun(result)
 
     def postrun(self, result):
@@ -144,9 +178,17 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug("{}.Run: {}[{}]".format(
-            self.__class__.__name__, self.__class__.path, self.uuid
-        ))
+        logger.debug(
+            "{}.Run: {}[{}]".format(
+                self.__class__.__name__, self.__class__.path, self.uuid
+            ),
+            extra=dict(
+                kmsg=Message(
+                    self.uuid, entrypoint=self.__class__.path,
+                    params=self.params
+                )
+            )
+        )
         return self.run()
 
     def run(self):
