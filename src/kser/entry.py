@@ -69,7 +69,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
-                ),
+                ).dump(),
                 kresult=ResultSchema().dump(result).data if result else dict()
             )
         )
@@ -105,7 +105,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
-                ),
+                ).dump(),
                 kresult=ResultSchema().dump(result).data if result else dict()
             )
         )
@@ -134,7 +134,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
-                )
+                ).dump()
             )
         )
         self.check_required_params()
@@ -158,7 +158,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
-                )
+                ).dump()
             )
         )
         return self.postrun(result)
@@ -186,7 +186,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
-                )
+                ).dump()
             )
         )
         return self.run()
