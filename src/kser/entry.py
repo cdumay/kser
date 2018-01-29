@@ -60,7 +60,10 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        result += self.result
+        if result:
+            result = self.result + result
+        else:
+            result = self.result
         logger.info(
             "{}.Success: {}[{}]: {}".format(
                 self.__class__.__name__, self.__class__.path, self.uuid, result
@@ -97,6 +100,10 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
+        if result:
+            result = self.result + result
+        else:
+            result = self.result
         logger.error(
             "{}.Failed: {}[{}]: {}".format(
                 self.__class__.__name__, self.__class__.path, self.uuid, result
