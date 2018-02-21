@@ -1,42 +1,27 @@
-.. kser documentation master file, created by
-   sphinx-quickstart on Wed Jul 26 12:28:48 2017.
+.. Kser documentation master file, created by
+   sphinx-quickstart on Wed Feb 21 16:31:13 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-********************************
-Welcome to kser's documentation!
-********************************
+Kser
+====
 
-Kser is a Kafka lib to serialize and deserialize Message in Kafka.
+Kser is a bundle of python library whose purpose is to serialize tasks to be
+executed on Kafka consumers.
 
-.. image::
-   _static/kser.png
+.. image:: _static/kser.png
 
-Workflow:
+#. A message comes from Kafka.
+#. Consumer deserialize message and send it to the "router" witch dispatch the message to the registry.
+#. Registry loads the correct entrypoint based on the message content.
+#. Registry execute the entrypoint with the message data and return a result.
+#. Result is sent back to the router which dispatch it.
+#. Result may be sent back to kafka using the Producer.
 
-* **1**: A new entry is ack by the consumer
-* **2**: Raw data is deserialized as :class:`kser.transport.Message`.
-* **3**: Message is routed to the :class:`kser.entry.Entrypoint` set in ``message.entrypoint`` using the :attr:`kser.consumer.Consumer.REGISTRY`.
-* **4**: Entrypoint execution return a :class:`kser.result.Result`.
-* **5**: Router result may sent the result to Python code (**5a**) or sent it to Kafka via the Producer in a :class:`kser.transport.Message` object (**5b**).
+API Focus
+---------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: API focus:
+   :maxdepth: 1
 
-   consumer
-   controller
-   transport
-   entry
-   result
-   producer
-
-
-
-******************
-Indices and tables
-******************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   entry.rst
