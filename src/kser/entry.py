@@ -8,8 +8,9 @@
 """
 import logging
 from uuid import uuid4
+
+from cdumay_error import ValidationError
 from cdumay_result import Result, ResultSchema
-from cdumay_rest_client.exceptions import NotImplemented, ValidationError
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)

@@ -6,8 +6,8 @@
 
 
 """
+from cdumay_error import ValidationError
 from marshmallow import Schema, fields
-from cdumay_rest_client.exceptions import ValidationError
 from cdumay_result import ResultSchema, Result
 
 

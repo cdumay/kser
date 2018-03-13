@@ -1,3 +1,2 @@
-marshmallow
-cdumay-rest-client
+cdumay-error
 cdumay-result
