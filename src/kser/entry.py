@@ -43,7 +43,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         try:
             return self.postinit()
         except Exception as exc:
-            return self._onerror(Result.fromException(exc, uuid=self.uuid))
+            return self._onerror(Result.from_exception(exc, uuid=self.uuid))
 
     def postinit(self):
         """"""
@@ -74,7 +74,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
                 ).dump(),
-                kresult=ResultSchema().dump(result).data if result else dict()
+                kresult=ResultSchema().dump(result) if result else dict()
             )
         )
         return self.onsuccess(result)
@@ -114,7 +114,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
                     self.uuid, entrypoint=self.__class__.path,
                     params=self.params
                 ).dump(),
-                kresult=ResultSchema().dump(result).data if result else dict()
+                kresult=ResultSchema().dump(result) if result else dict()
             )
         )
         return self.onerror(result)
@@ -230,8 +230,9 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         try:
             return self.unsafe_execute(result=result)
         except Exception as exc:
-            return self._onerror(Result.fromException(exc, uuid=self.uuid))
+            return self._onerror(Result.from_exception(exc, uuid=self.uuid))
 
+    # noinspection PyPep8Naming
     def to_Message(self, result=None):
         """ Entrypoint -> Message
 
@@ -244,6 +245,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             result=result if result else self.result
         )
 
+    # noinspection PyPep8Naming
     @classmethod
     def from_Message(cls, kmsg):
         """ Message -> Entrypoint

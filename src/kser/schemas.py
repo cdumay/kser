@@ -27,11 +27,11 @@ class Base(object):
 
     def dump(self):
         """description of dump"""
-        return self.MARSHMALLOW_SCHEMA.dump(self).data
+        return self.MARSHMALLOW_SCHEMA.dump(self)
 
     def dumps(self):
         """description of dumps"""
-        return self.MARSHMALLOW_SCHEMA.dumps(self).data
+        return self.MARSHMALLOW_SCHEMA.dumps(self)
 
     def __str__(self):
         return str(self.dump())

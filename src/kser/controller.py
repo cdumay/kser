@@ -32,7 +32,7 @@ class BaseController(object):
             ),
             extra=dict(
                 kmsg=kmsg.dump(),
-                kresult=ResultSchema().dump(result).data if result else dict()
+                kresult=ResultSchema().dump(result) if result else dict()
             )
         )
         return cls.onsuccess(kmsg, result)
@@ -64,7 +64,7 @@ class BaseController(object):
             ),
             extra=dict(
                 kmsg=kmsg.dump(),
-                kresult=ResultSchema().dump(result).data if result else dict()
+                kresult=ResultSchema().dump(result) if result else dict()
             )
         )
         return cls.onerror(kmsg, result)
@@ -127,7 +127,7 @@ class Controller(BaseController):
             ),
             extra=dict(
                 kmsg=kmsg.dump(),
-                kresult=ResultSchema().dump(result).data if result else dict()
+                kresult=ResultSchema().dump(result) if result else dict()
             )
         )
         new_kmsg = cls.TRANSPORT(
@@ -184,7 +184,7 @@ class Controller(BaseController):
                 ),
                 extra=dict(kafka_raw_data=raw_data)
             )
-            return Result.fromException(exc)
+            return Result.from_exception(exc)
 
         try:
             if kmsg.entrypoint not in cls.ENTRYPOINTS:
@@ -201,7 +201,7 @@ class Controller(BaseController):
             ).execute()
 
         except Exception as exc:
-            result = Result.fromException(exc, kmsg.uuid)
+            result = Result.from_exception(exc, kmsg.uuid)
 
         finally:
             # noinspection PyUnboundLocalVariable
