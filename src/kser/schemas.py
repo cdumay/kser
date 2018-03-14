@@ -7,6 +7,7 @@
 
 """
 from cdumay_error import ValidationError
+import marshmallow.exceptions
 from marshmallow import Schema, fields
 from cdumay_result import ResultSchema, Result
 
@@ -66,12 +67,10 @@ class Message(Base):
     @classmethod
     def loads(cls, json_data):
         """description of load"""
-        data, errors = cls.MARSHMALLOW_SCHEMA.loads(json_data)
-        if len(errors) > 0:
-            raise ValidationError(
-                "Invalid Message", extra=dict(**data, **errors)
-            )
-        return cls(**data)
+        try:
+            return cls(**cls.MARSHMALLOW_SCHEMA.loads(json_data))
+        except marshmallow.exceptions.ValidationError as exc:
+            raise ValidationError("Failed to load message", extra=exc.args[0])
 
     def __init__(self, uuid, entrypoint, params=None, result=None, route=None):
         Base.__init__(self, uuid, entrypoint, params)
