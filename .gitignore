@@ -3,3 +3,5 @@
 /dist/
 /.eggs/
 /tests/
+/docs/_build/
+__pycache__
