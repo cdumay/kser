@@ -26,7 +26,7 @@ class BaseController(object):
         :return: Execution result
         :rtype: kser.result.Result
         """
-        logger.debug(
+        logger.info(
             "{}.Success: {}[{}]: {}".format(
                 cls.__name__, kmsg.entrypoint, kmsg.uuid, result
             ),
