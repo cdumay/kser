@@ -23,6 +23,12 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=open('requirements.txt', 'r').read().strip(),
+    extras_require={
+        'confluent': ['confluent-kafka'],
+        'http': ['cdumay-rest-client>=0.1'],
+        'crypto': ['csodium==0.0.3'],
+        'pykafka': ['kafka-python'],
+    },
     entry_points="""
 """,
 )
