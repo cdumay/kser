@@ -6,7 +6,6 @@
 
 
 """
-from cdumay_error import ConfigurationError
 from kafka import KafkaProducer
 from cdumay_result import Result
 from kser.controller import BaseController
@@ -54,9 +53,6 @@ class Producer(BaseController):
 
         result = Result(uuid=kmsg.uuid)
         try:
-            if topic not in self.client._metadata.topics():
-                raise ConfigurationError("Topic {} not found".format(topic))
-
             self.client.send(
                 topic, self._onmessage(kmsg).dumps().encode("UTF-8")
             )
