@@ -26,4 +26,10 @@ class Consumer(object):
         """
         logger.info("{}.Starting...".format(self.__class__.__name__))
         for msg in self.client:
-            self.REGISTRY.run(msg.value.decode('utf-8'))
+            data = msg.value.decode('utf-8')
+            if self.client.config['enable_auto_commit'] is False:
+                self.client.commit()
+                logger.debug(
+                    "{}: Manual commit done.".format(self.__class__.__name__)
+                )
+            self.REGISTRY.run(data)
