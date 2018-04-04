@@ -63,6 +63,12 @@ It is possible to encrypt messages in the Kafka queue using `libsodium <https://
 
     You need to install manually libsodium, see `libsodium documentation <https://download.libsodium.org/doc/>`_
 
+Add-ons
+=======
+
+- `Kser operations <https://github.com/cdumay/kser-operation>`_: Operation (sequence of tasks) support.
+- `Flask extension <https://github.com/cdumay/flask-kser>`_: Flask integration.
+
 Requirements
 ============
 
