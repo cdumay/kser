@@ -11,7 +11,7 @@ import logging
 from cdumay_error import ValidationError
 from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
-from kser_operation.task import Task
+from kser.sequencing.task import Task
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ class Operation(Task):
     def add_task(self, task):
         """ add task to operation
 
-        :param kser_operation.task.Task task: task to add
+        :param kser.sequencing.task.Task task: task to add
         """
         self.tasks.append(task)
 
@@ -196,7 +196,7 @@ class Operation(Task):
     def launch_next(self, task=None, result=None):
         """ Launch next task or finish operation
 
-        :param kser_operation.task.Task task: previous task
+        :param kser.sequencing.task.Task task: previous task
         :param cdumay_result.Result result: previous task result
 
         :return: Execution result
@@ -225,7 +225,7 @@ class Operation(Task):
         """To implement, post build actions (database mapping ect...)
 
         :return: the controller
-        :rtype: kser_operation.operation.Operation
+        :rtype: kser.sequencing.operation.Operation
         """
         return self
 
@@ -234,7 +234,7 @@ class Operation(Task):
 
         :param dict kwargs: tasks parameters (~=context)
         :return: list of tasks
-        :rtype: list(kser_operation.operation.Operation)
+        :rtype: list(kser.sequencing.operation.Operation)
         """
         tasks = self.build_tasks(**kwargs)
         logger.debug(
@@ -257,7 +257,7 @@ class Operation(Task):
 
         :param dict kwargs: tasks parameters (~=context)
         :return: list of tasks
-        :rtype: list(kser_operation.operation.Operation)
+        :rtype: list(kser.sequencing.operation.Operation)
         """
         return list()
 
@@ -265,7 +265,7 @@ class Operation(Task):
         """ perfrom checks and build tasks
 
         :return: list of tasks
-        :rtype: list(kser_operation.operation.Operation)
+        :rtype: list(kser.sequencing.operation.Operation)
         """
         params = self._prebuild(**kwargs)
         if not params:
@@ -278,7 +278,7 @@ class Operation(Task):
 
         :param dict kwargs: operation data
         :return: the controller
-        :rtype: kser_operation.controller.OperationController
+        :rtype: kser.sequencing.controller.OperationController
         """
         self.tasks += self.compute_tasks(**kwargs)
         return self.finalize()
@@ -287,5 +287,5 @@ class Operation(Task):
         """ Send operation to Kafka
 
         :return: The operation
-        :rtype: kser_operation.operation.Operation
+        :rtype: kser.sequencing.operation.Operation
         """
