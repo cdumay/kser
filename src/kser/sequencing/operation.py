@@ -43,9 +43,9 @@ class Operation(Task):
         return kwargs
 
     def __init__(self, uuid=None, status="PENDING", params=None, tasks=None,
-                 result=None):
+                 result=None, metadata=None):
         Task.__init__(self, uuid=uuid, params=params, status=status,
-                      result=result)
+                      result=result, metadata=metadata)
         self.tasks = tasks or list()
 
     def __repr__(self):

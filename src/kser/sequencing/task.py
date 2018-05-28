@@ -21,11 +21,11 @@ class Task(Entrypoint):
         """Load task by its ID"""
 
     def __init__(self, uuid=None, params=None, status="PENDING", result=None,
-                 **kwargs):
+                 metadata=None):
         self.status = status
-        self.metadata = kwargs
-
-        Entrypoint.__init__(self, uuid=uuid, params=params, result=result)
+        Entrypoint.__init__(
+            self, uuid=uuid, params=params, result=result, metadata=metadata
+        )
 
     def get_attr(self, item):
         attr = "{}Id".format(item)
@@ -38,7 +38,8 @@ class Task(Entrypoint):
         )
         extra = kwargs.pop("extra", dict())
         extra.update(dict(kmsg=Message(
-            self.uuid, entrypoint=self.__class__.path, params=self.params
+            self.uuid, entrypoint=self.__class__.path, params=self.params,
+            metadata=self.metadata
         ).dump()))
 
         return logger.log(

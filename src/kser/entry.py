@@ -25,17 +25,11 @@ class EntrypointMeta(type):
 class Entrypoint(object, metaclass=EntrypointMeta):
     REQUIRED_FIELDS = ()
 
-    def __init__(self, uuid=None, params=None, result=None):
-        if not uuid:
-            uuid = str(uuid4())
-        if not params:
-            params = dict()
-        if not result:
-            result = Result(uuid=uuid)
-
-        self.uuid = uuid
-        self.params = params
-        self.result = result
+    def __init__(self, uuid=None, params=None, result=None, metadata=None):
+        self.uuid = uuid or str(uuid4())
+        self.params = params or dict()
+        self.result = result or Result(uuid=self.uuid)
+        self.metadata = metadata or dict()
         self._post_init()
 
     def _post_init(self):
@@ -72,7 +66,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             extra=dict(
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
+                    params=self.params, metadata=self.metadata
                 ).dump(),
                 kresult=ResultSchema().dump(result) if result else dict()
             )
@@ -112,7 +106,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             extra=dict(
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
+                    params=self.params, metadata=self.metadata
                 ).dump(),
                 kresult=ResultSchema().dump(result) if result else dict()
             )
@@ -141,7 +135,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             extra=dict(
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
+                    params=self.params, metadata=self.metadata
                 ).dump()
             )
         )
@@ -165,7 +159,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             extra=dict(
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
+                    params=self.params, metadata=self.metadata
                 ).dump()
             )
         )
@@ -193,7 +187,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
             extra=dict(
                 kmsg=Message(
                     self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
+                    params=self.params, metadata=self.metadata
                 ).dump()
             )
         )
@@ -242,7 +236,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         """
         return Message(
             uuid=self.uuid, entrypoint=self.__class__.path, params=self.params,
-            result=result if result else self.result
+            result=result if result else self.result, metadata=self.metadata
         )
 
     # noinspection PyPep8Naming
@@ -254,4 +248,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: a entrypoint
         :rtype kser.entry.Entrypoint
         """
-        return cls(uuid=kmsg.uuid, params=kmsg.params, result=kmsg.result)
+        return cls(
+            uuid=kmsg.uuid, params=kmsg.params, result=kmsg.result,
+            metadata=kmsg.metadata
+        )
