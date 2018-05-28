@@ -113,46 +113,6 @@ class Controller(BaseController):
     TRANSPORT = Message
 
     @classmethod
-    def _onforward(cls, kmsg, result):
-        """ To execute on execution forward
-
-        :param kser.schemas.Message kmsg: Kafka message
-        :param kser.result.Result result: Execution result
-        :return: Execution result
-        :rtype: kser.result.Result
-        """
-        logger.debug(
-            "{}.Forward: {}[{}]".format(
-                cls.__name__, kmsg.entrypoint, kmsg.uuid
-            ),
-            extra=dict(
-                kmsg=kmsg.dump(),
-                kresult=ResultSchema().dump(result) if result else dict()
-            )
-        )
-        new_kmsg = cls.TRANSPORT(
-            uuid=kmsg.route.uuid, entrypoint=kmsg.route.entrypoint,
-            params=kmsg.route.params, result=result
-        )
-        logger.debug(
-            "{}.ForwardTo: {}[{}]".format(
-                cls.__name__, new_kmsg.entrypoint, new_kmsg.uuid
-            ),
-            extra=dict(kmsg=new_kmsg.dump())
-        )
-        return cls.onforward(new_kmsg)
-
-    @classmethod
-    def onforward(cls, kmsg):
-        """ To execute on execution forward
-
-        :param kser.schemas.Message kmsg: Kafka message
-        :return: Execution result
-        :rtype: kser.result.Result
-        """
-        return kmsg.result
-
-    @classmethod
     def register(cls, name, entrypoint):
         """ Register a new entrypoint
 
@@ -206,9 +166,6 @@ class Controller(BaseController):
         finally:
             # noinspection PyUnboundLocalVariable
             if result and result.retcode < 300:
-                if kmsg.route:
-                    cls._onforward(kmsg, result)
-
                 return cls._onsuccess(kmsg=kmsg, result=result)
             else:
                 return cls._onerror(kmsg=kmsg, result=result)

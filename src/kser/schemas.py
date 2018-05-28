@@ -38,27 +38,9 @@ class Base(object):
         return str(self.dump())
 
 
-class RouteSchema(BaseSchema):
-    onerror = fields.String()
-
-
-class Route(Base):
-    MARSHMALLOW_SCHEMA = RouteSchema()
-
-    def __init__(self, uuid, entrypoint, params=None, onerror=None):
-        Base.__init__(self, uuid, entrypoint, params)
-        self.onerror = onerror or entrypoint
-
-    def __repr__(self):
-        """"""
-        return "Route<uuid='{}', entrypoint='{}', onerror={}>".format(
-            self.uuid, self.entrypoint, self.onerror
-        )
-
-
 class MessageSchema(BaseSchema):
     result = fields.Nested(ResultSchema, missing=None)
-    route = fields.Nested(RouteSchema, missing=None)
+    metadata = fields.Dict()
 
 
 class Message(Base):
@@ -72,7 +54,8 @@ class Message(Base):
         except marshmallow.exceptions.ValidationError as exc:
             raise ValidationError("Failed to load message", extra=exc.args[0])
 
-    def __init__(self, uuid, entrypoint, params=None, result=None, route=None):
+    def __init__(self, uuid, entrypoint, params=None, result=None,
+                 metadata=None):
         Base.__init__(self, uuid, entrypoint, params)
         if result:
             if isinstance(result, Result):
@@ -81,14 +64,7 @@ class Message(Base):
                 self.result = Result(**result)
         else:
             self.result = Result(uuid=uuid)
-
-        if route:
-            if isinstance(route, Route):
-                self.route = route
-            else:
-                self.route = Route(**route)
-        else:
-            self.route = None
+        self.metadata = metadata or dict()
 
     def __repr__(self):
         """"""
