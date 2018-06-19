@@ -56,8 +56,8 @@ class Producer(BaseController):
             self.client.send(
                 topic, self._onmessage(kmsg).dumps().encode("UTF-8")
             )
-            result.stdout = "Message {}[{}] sent".format(
-                kmsg.entrypoint, kmsg.uuid
+            result.stdout = "Message {}[{}] sent in {}".format(
+                kmsg.entrypoint, kmsg.uuid, topic
             )
             self.client.flush()
 
