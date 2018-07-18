@@ -23,7 +23,7 @@ class EntrypointMeta(type):
 
 
 class Entrypoint(object, metaclass=EntrypointMeta):
-    REQUIRED_FIELDS = ()
+    REQUIRED_FIELDS = []
 
     def __init__(self, uuid=None, params=None, result=None, metadata=None):
         self.uuid = uuid or str(uuid4())
