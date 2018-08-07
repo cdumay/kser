@@ -11,6 +11,8 @@ from uuid import uuid4
 
 from cdumay_error import ValidationError
 from cdumay_result import Result, ResultSchema
+from kser import KSER_TASK_COUNT, __hostname__, KSER_METRICS_ENABLED, \
+    KSER_TASKS_STATUS
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
@@ -55,6 +57,10 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
+        if KSER_METRICS_ENABLED == "yes":
+            KSER_TASKS_STATUS.labels(
+                __hostname__, self.__class__.path, 'SUCCESS'
+            ).inc()
         if result:
             result = self.result + result
         else:
@@ -95,6 +101,11 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
+        if KSER_METRICS_ENABLED == "yes":
+            KSER_TASKS_STATUS.labels(
+                __hostname__, self.__class__.path, 'FAILED'
+            ).inc()
+
         if result:
             result = self.result + result
         else:
@@ -180,6 +191,9 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         :return: Execution result
         :rtype: kser.result.Result
         """
+        if KSER_METRICS_ENABLED == "yes":
+            KSER_TASK_COUNT.inc()
+
         logger.debug(
             "{}.Run: {}[{}]".format(
                 self.__class__.__name__, self.__class__.path, self.uuid

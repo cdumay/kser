@@ -28,6 +28,7 @@ setup(
         'http': ['cdumay-rest-client>=0.1'],
         'crypto': ['csodium==0.0.3'],
         'pykafka': ['kafka-python'],
+        'prometheus': ['prometheus_client']
     },
     entry_points="""
 """,
