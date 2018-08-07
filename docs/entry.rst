@@ -108,6 +108,7 @@ Example usage
 Let's define a basic entrypoint:
 
 .. code-block:: python
+   :linenos:
 
      import logging
      from kser.entry import Entrypoint

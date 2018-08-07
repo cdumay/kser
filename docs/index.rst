@@ -18,10 +18,12 @@ executed on Kafka consumers.
 #. Result is sent back to the router which dispatch it.
 #. Result may be sent back to kafka using the Producer.
 
-API Focus
----------
+Features & API Focus
+--------------------
 
 .. toctree::
    :maxdepth: 1
 
    entry.rst
+   crypto.rst
+   metrics.rst
