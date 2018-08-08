@@ -1,10 +1,15 @@
 :mod:`kser.crypto` --- Message encryption
 ==========================================
 
+This module allow you to encrypt and decrypt messages in kafka
+
 Install
 -------
 
-    $ pip install kser[opentracing]
+    pip install kser[crypto]
+
+API focus
+---------
 
 .. py:class:: CryptoMessage(context):
 
@@ -28,16 +33,10 @@ Install
     :return: the Encoded message
 
 
-Example usage
--------------
+Example
+-------
 
 For this example, we'll use `kafka-python <https://github.com/dpkp/kafka-python>`_ as kafka backend.
-
-**Install**:
-
-.. code-block::
-
-    pip install kser[pykafka,crypto]
 
 **Consumer example**:
 
