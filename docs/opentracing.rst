@@ -175,4 +175,4 @@ Kser allow you to create operation using another operation using
            tasks += DiceLaunch().compute_tasks()
            return tasks
 
-This will a span with 3x5 tasks in it.
+This will create a span with 3x5 tasks in it.

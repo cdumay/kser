@@ -1,6 +1,11 @@
 :mod:`kser.crypto` --- Message encryption
 ==========================================
 
+Install
+-------
+
+    $ pip install kser[opentracing]
+
 .. py:class:: CryptoMessage(context):
 
     It's a container which includes the original message as well as the nonce
