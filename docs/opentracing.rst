@@ -44,7 +44,7 @@ The following example is based on a dice game, player roll five time dices:
     )
 
     from cdumay_result import Result
-    from kser.tracing import TRACER
+    from kser.tracing import OpentracingTracer
     from kser.tracing.operation import OpentracingOperation
     from kser.tracing.task import OpentracingTask
 
@@ -81,17 +81,21 @@ The following example is based on a dice game, player roll five time dices:
     if __name__ == '__main__':
         DiceLaunch().build().execute()
         time.sleep(4)
-        TRACER.close()
+        OpentracingTracer.get_tracer().close()
 
 **Explanations**:
 
-* line 10: Kser define his own tracer with app_name=kser
 * line 11-12: as we can see, we use the specialized classes
   :class:`kser.tracing.operation.OpentracingOperation` and :class:`kser.tracing.task.OpentracingTask` based on
   :class:`kser.sequencing.operation.Operation` and :class:`kser.sequencing.task.Task`.
 * line 21/25/29: we simulate execution time
 * line 46: `yield to IOLoop to flush the spans <https://github.com/jaegertracing/jaeger-client-python/issues/50>`_
 * line 47: we flush any buffered spans
+
+.. note::
+
+   As the opentracing tracer must be a singleton, we use :code:`kser.tracing.OpentracingTracer.get_tracer()`
+   to get the current tracer. If there is no initialized tracer, kser will create a new one.
 
 **Console output**::
 

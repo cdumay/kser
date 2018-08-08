@@ -10,7 +10,7 @@ import logging
 
 from kser.schemas import Message
 from kser.sequencing.operation import Operation
-from kser.tracing import TRACER, OpentracingBase
+from kser.tracing import OpentracingBase, OpentracingTracer
 from opentracing import Format
 
 logger = logging.getLogger(__name__)
@@ -63,7 +63,9 @@ class OpentracingOperation(Operation, OpentracingBase):
             self._prerun()
             for task in self.tasks:
                 span_ctx = dict()
-                TRACER.inject(span, Format.TEXT_MAP, span_ctx)
+                OpentracingTracer.get_tracer().inject(
+                    span, Format.TEXT_MAP, span_ctx
+                )
                 task.set_parent_span(span_ctx)
                 result = task.unsafe_execute(result=result)
                 if result.retcode != 0:

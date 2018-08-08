@@ -41,7 +41,6 @@ class CryptoSchema(Schema):
         """ Decode message using libsodium
 
         :param str jdata: jdata to load
-        :param str secretbox_key: Secrebox Key
         :return: the Encoded message
         """
         ckmsg = self.loads(jdata)

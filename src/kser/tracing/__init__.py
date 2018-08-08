@@ -8,15 +8,30 @@
 """
 import os
 
+import opentracing
 from jaeger_client import Config
 from kser.entry import EntrypointMeta
 from kser.sequencing.task import Task
 from opentracing import Format
 
-TRACER = Config(service_name="kser", config={
-    'sampler': {'type': 'const', 'param': 1}, 'logging': True,
-    'local_agent': {'reporting_host': os.getenv('JAEGER_HOST', 'localhost')}
-}).initialize_tracer()
+
+class OpentracingTracer(object):
+    _tracer = None
+
+    @staticmethod
+    def get_tracer():
+        if OpentracingTracer._tracer is None:
+            cfg = Config(service_name="kser", config={
+                'sampler': {'type': 'const', 'param': 1}, 'logging': True,
+                'local_agent': {
+                    'reporting_host': os.getenv('JAEGER_HOST', 'localhost')
+                }
+            })
+            if cfg.initialized() is True:
+                OpentracingTracer._tracer = opentracing.tracer
+            else:
+                OpentracingTracer._tracer = cfg.initialize_tracer()
+        return OpentracingTracer._tracer
 
 
 class OpentracingBase(Task, metaclass=EntrypointMeta):
@@ -40,11 +55,15 @@ class OpentracingBase(Task, metaclass=EntrypointMeta):
     def create_span(self, action=None):
         span_ctx = None
         if len(self._span) != 0:
-            span_ctx = TRACER.extract(Format.TEXT_MAP, self._span)
+            span_ctx = OpentracingTracer.get_tracer().extract(
+                Format.TEXT_MAP, self._span
+            )
 
-        return TRACER.start_span(self.label(action), span_ctx)
+        return OpentracingTracer.get_tracer().start_span(
+            self.label(action), span_ctx
+        )
 
     def create_root_span(self, action=None):
         span = self.create_span(action)
-        TRACER.inject(span, Format.TEXT_MAP, self._span)
+        OpentracingTracer.get_tracer().inject(span, Format.TEXT_MAP, self._span)
         return span

@@ -9,11 +9,9 @@
 
 import logging
 
-from cdumay_result import Result, ResultSchema
 from kser import KSER_METRICS_ENABLED, KSER_TASK_COUNT
 from kser.schemas import Message
-from kser.tracing import TRACER, OpentracingBase
-from opentracing import Format
+from kser.tracing import OpentracingBase
 
 logger = logging.getLogger(__name__)
 
