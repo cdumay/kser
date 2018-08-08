@@ -101,9 +101,30 @@ way to implement your own is to override the triggers methods (prefixed with '_'
 
             return self.run()
 
-.. note::
+.. seealso::
 
-    See `prometheus_client documentation <https://github.com/prometheus/client_python>`_ for more info.
+    `prometheus_client documentation <https://github.com/prometheus/client_python>`_
+        Documentation of the python Prometheus client
+
+opentracing support
+-------------------
+
+You can use `opentracing <http://opentracing.io/>`_ with `Jaeger <https://www.jaegertracing.io/docs/>`_ to follow operation and task:
+
+    $ pip install kser[opentracing]
+
+Configuration can be set using environment variable:
+
++----------------------+---------------+
+| Environment variable | Default value |
++======================+===============+
+| JAEGER_HOST          | localhost     |
++----------------------+---------------+
+
+.. seealso::
+
+    `Opentracing support with Jaeger <http://kser.readthedocs.io/en/latest/opentracing.html>`_
+        Kser documentation
 
 Add-ons
 =======

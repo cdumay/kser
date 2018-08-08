@@ -3,6 +3,11 @@ Prometheus export
 
 Kser support `prometheus <https://prometheus.io/>`_ metric export.
 
+Install
+-------
+
+    $ pip install kser[prometheus]
+
 Configuration
 -------------
 

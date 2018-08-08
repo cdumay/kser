@@ -27,3 +27,4 @@ Features & API Focus
    entry.rst
    crypto.rst
    metrics.rst
+   opentracing.rst
