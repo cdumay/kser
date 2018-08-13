@@ -102,7 +102,7 @@ way to implement your own is to override the triggers methods (prefixed with '_'
 
             return self.run()
 
-.. seealso::
+See also:
 
     `prometheus_client documentation <https://github.com/prometheus/client_python>`_
         Documentation of the python Prometheus client
@@ -122,7 +122,7 @@ Configuration can be set using environment variable:
 | JAEGER_HOST          | localhost     |
 +----------------------+---------------+
 
-.. seealso::
+See also:
 
     `Opentracing support with Jaeger <http://kser.readthedocs.io/en/latest/opentracing.html>`_
         Kser documentation
