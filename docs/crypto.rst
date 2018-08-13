@@ -11,26 +11,26 @@ Install
 API focus
 ---------
 
-.. py:class:: CryptoMessage(context):
+.. py:class:: kser.crypto.CryptoMessage(context):
 
     It's a container which includes the original message as well as the nonce
     required by the consumer to decipher the content
 
     :param dict context: We use marshmallow context to store the secretbox_key
 
-.. py:method:: CryptoMessage.decode(jdata)
+   .. py:method:: kser.crypto.CryptoMessage.decode(jdata)
 
-    Encode message using libsodium
+       Encode message using libsodium
 
-    :param kser.schemas.Message kmsg: Kafka message
-    :return: the Encoded message
+       :param kser.schemas.Message kmsg: Kafka message
+       :return: the Encoded message
 
-.. py:method:: CryptoMessage.encode(kmsg)
+   .. py:method:: kser.crypto.CryptoMessage.encode(kmsg)
 
-    Decode message using libsodium
+       Decode message using libsodium
 
-    :param str jdata: jdata to load
-    :return: the Encoded message
+       :param str jdata: jdata to load
+       :return: the Encoded message
 
 
 Example

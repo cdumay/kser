@@ -34,6 +34,12 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         self.metadata = metadata or dict()
         self._post_init()
 
+    def label(self, action=None):
+        return "{}[{}]{}".format(
+            self.__class__.__name__, self.uuid,
+            " - {}".format(action) if action else ""
+        )
+
     def _post_init(self):
         """A post init trigger"""
         try:

@@ -35,67 +35,77 @@ The following example is based on a dice game, player roll five time dices:
 .. code-block:: python
    :linenos:
 
-    import random
-    import logging
-    import time
+   import logging
 
-    logging.basicConfig(
-        format='%(asctime)s %(message)s', level=logging.DEBUG
-    )
+   logging.basicConfig(
+       level=logging.DEBUG,
+       format="%(asctime)s %(levelname)-8s %(message)s"
+   )
 
-    from cdumay_result import Result
-    from kser.tracing import OpentracingTracer
-    from kser.tracing.operation import OpentracingOperation
-    from kser.tracing.task import OpentracingTask
+   import time
+   import random
 
-
-    def contrived_time():
-        time.sleep(random.randint(1, 20) / 10)
+   from cdumay_result import Result
+   from kser.tracing.task import OpentracingTask
+   from kser.tracing.operation import OpentracingOperation
 
 
-    class DiceRoll(OpentracingTask):
-        def prerun(self):
-            contrived_time()
-
-        def run(self):
-            launch = random.randint(1, 6)
-            time.sleep(random.randint(1, 3))
-            return Result(uuid=self.uuid, stdout="You made a {}".format(launch))
-
-        def postrun(self, result):
-            contrived_time()
-            return result
+   def contrived_time():
+       time.sleep(random.randint(1, 20) / 10)
 
 
-    class DiceLaunch(OpentracingOperation):
-        def build_tasks(self, **kwargs):
-            return [
-                DiceRoll(),
-                DiceRoll(),
-                DiceRoll(),
-                DiceRoll(),
-                DiceRoll(),
-            ]
+   class DiceRoll(OpentracingTask):
+       def prerun(self):
+           contrived_time()
+
+       def run(self):
+           launch = random.randint(1, 6)
+           time.sleep(random.randint(1, 3))
+           return Result(uuid=self.uuid, stdout="You made a {}".format(launch))
+
+       def postrun(self, result):
+           contrived_time()
+           return result
 
 
-    if __name__ == '__main__':
-        DiceLaunch().build().execute()
-        time.sleep(4)
-        OpentracingTracer.get_tracer().close()
+   class DiceLaunch(OpentracingOperation):
+       def build_tasks(self, **kwargs):
+           return [
+               DiceRoll(),
+               DiceRoll(),
+               DiceRoll(),
+           ]
+
+
+   if __name__ == '__main__':
+       import os
+       from jaeger_client import Config
+       from cdumay_opentracing import OpenTracingManager
+       from kser.entry import Entrypoint
+       from kser.tracing.driver import OpenTracingKserDriver
+
+       tracer = Config(service_name="test-kser", config=dict(
+           sampler=dict(type='const', param=1), logging=True,
+           local_agent=dict(reporting_host=os.getenv('JAEGER_HOST', 'localhost'))
+       )).initialize_tracer()
+
+       OpenTracingManager.register(Entrypoint, OpenTracingKserDriver)
+
+       DiceLaunch().build().execute()
+       time.sleep(4)
+       tracer.close()
 
 **Explanations**:
 
-* line 11-12: as we can see, we use the specialized classes
+* **line 11-12**: as we can see, we use the specialized classes
   :class:`kser.tracing.operation.OpentracingOperation` and :class:`kser.tracing.task.OpentracingTask` based on
   :class:`kser.sequencing.operation.Operation` and :class:`kser.sequencing.task.Task`.
-* line 21/25/29: we simulate execution time
-* line 46: `yield to IOLoop to flush the spans <https://github.com/jaegertracing/jaeger-client-python/issues/50>`_
-* line 47: we flush any buffered spans
-
-.. note::
-
-   As the opentracing tracer must be a singleton, we use :code:`kser.tracing.OpentracingTracer.get_tracer()`
-   to get the current tracer. If there is no initialized tracer, kser will create a new one.
+* **line 21/25/29**: we simulate execution time
+* **line 50-53**: We initialize tracing using Jaeger.
+* **line 55**: We register the Kser driver :class:`kser.tracing.driver.OpenTracingKserDriver` for subclass of :class:`kser.entry.Entrypoint`.
+* **line 57**: We launch the operation :code:`DiceLaunch`.
+* **line 59**: `yield to IOLoop to flush the spans <https://github.com/jaegertracing/jaeger-client-python/issues/50>`_
+* **line 60**: we flush any buffered spans
 
 **Console output**::
 
@@ -180,3 +190,14 @@ Kser allow you to create operation using another operation using
            return tasks
 
 This will create a span with 3x5 tasks in it.
+
+.. seealso::
+
+   `cdumay-opentracing <https://github.com/cdumay/cdumay-opentracing>`_
+      Library to facilitate opentracing integration
+
+   `OpenTracing API for Python <https://github.com/opentracing/opentracing-python>`_
+      Python library for OpenTracing.
+
+   `jaeger-client-python <https://github.com/jaegertracing/jaeger-client-python>`_
+      Jaeger Bindings for Python OpenTracing API

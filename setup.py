@@ -29,10 +29,7 @@ setup(
         'crypto': ['csodium==0.0.3'],
         'pykafka': ['kafka-python'],
         'prometheus': ['prometheus_client'],
-        'opentracing': [
-            'opentracing>=1.2,<2', 'opentracing_instrumentation>=2.2,<3',
-            'jaeger-client>=3.8,<4'
-        ]
+        'opentracing': ['cdumay-opentracing']
     },
     entry_points="""
 """,

@@ -1,106 +1,106 @@
 :mod:`kser.entry` --- Entries
 =============================
 
-.. py:class:: Entrypoint(uuid=None, params=None, result=None)
+.. py:class:: kser.entry.Entrypoint(uuid=None, params=None, result=None)
 
     An entrypoint is the code which will be registred in the controller to
     handle execution.
 
     :param str uuid: An unique identifier.
-    :param dict params: Parameters to send to the entrypoint
+    :param dict params: Entrypoint parameters
     :param cdumay_result.Result result: previous task result
 
-.. py:attribute:: REQUIRED_FIELDS
+   .. py:attribute:: kser.entry.Entrypoint.REQUIRED_FIELDS
 
-    Tuple or list of keys required by the entrypoint.
+       Tuple or list of keys required by the entrypoint.
 
-.. py:method:: Entrypoint.check_required_params()
+   .. py:method:: kser.entry.Entrypoint.check_required_params()
 
-    Perform a self test. It can be used to check params received, states...
-    By default, this method check the presence of each item stored in
-    :py:attr:`Entrypoint.REQUIRED_FIELDS` in the `Entrypoint.params` dictionnary.
+       Perform a self test. It can be used to check params received, states...
+       By default, this method check the presence of each item stored in
+       :py:attr:`kser.entry.Entrypoint.REQUIRED_FIELDS` in the `kser.entry.Entrypoint.params` dictionnary.
 
-.. py:method:: Entrypoint.execute(result=None)
+   .. py:method:: kser.entry.Entrypoint.execute(result=None)
 
-    The main method used to launch the entrypoint execution. This method is
-    execption safe. To execute an entrypoint without catching execption uses :py:meth:`Entrypoint.unsafe_execute`.
+       The main method used to launch the entrypoint execution. This method is
+       execption safe. To execute an entrypoint without catching execption uses :py:meth:`kser.entry.Entrypoint.unsafe_execute`.
 
-    :param cdumay_result.Result result: Previous task result
-    :return: The execution result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Previous task result
+       :return: The execution result
+       :rtype: cdumay_result.Result
 
-.. py:classmethod:: Entrypoint.from_Message(kmsg)
+   .. py:classmethod:: kser.entry.Entrypoint.from_Message(kmsg)
 
-    Initialize the entrypoint from a :class:`kser.schemas.Message`
+       Initialize the entrypoint from a :class:`kser.schemas.Message`
 
-    :param kser.schemas.Message kmsg: A message received from Kafka.
-    :return: The entrypoint
-    :rtype: kser.entry.Entrypoint
+       :param kser.schemas.Message kmsg: A message received from Kafka.
+       :return: The entrypoint
+       :rtype: kser.entry.Entrypoint
 
-.. py:method:: Entrypoint.log(message, level=logging.INFO, *args, **kwargs)
+   .. py:method:: kser.entry.Entrypoint.log(message, level=logging.INFO, *args, **kwargs)
 
-    Adds entrypoint information to the message and sends the result to `logging.log <https://docs.python.org/3.5/library/logging.html?#logging.Logger.log>`_.
+       Adds entrypoint information to the message and sends the result to `logging.log <https://docs.python.org/3.5/library/logging.html?#logging.Logger.log>`_.
 
-    :param str message: message content
-    :param int level: `Logging Level <https://docs.python.org/3.5/library/logging.html?#logging-levels>`_
-    :param list args: Arguments which are merged into msg using the string formatting operator.
-    :param dict kwargs: Keyword arguments.
+       :param str message: message content
+       :param int level: `Logging Level <https://docs.python.org/3.5/library/logging.html?#logging-levels>`_
+       :param list args: Arguments which are merged into msg using the string formatting operator.
+       :param dict kwargs: Keyword arguments.
 
-.. py:method:: Entrypoint.onerror(result)
+   .. py:method:: kser.entry.Entrypoint.onerror(result)
 
-    Trigger call on execution error.
+       Trigger call on execution error.
 
-    :param cdumay_result.Result result: Current execution result that led to the error.
-    :return: Return back the result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Current execution result that led to the error.
+       :return: Return back the result
+       :rtype: cdumay_result.Result
 
-.. py:method:: Entrypoint.onsuccess(result)
+   .. py:method:: kser.entry.Entrypoint.onsuccess(result)
 
-    Trigger call on execution success.
+       Trigger call on execution success.
 
-    :param cdumay_result.Result result: Current execution result that led to the success.
-    :return: Return back the result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Current execution result that led to the success.
+       :return: Return back the result
+       :rtype: cdumay_result.Result
 
-.. py:method:: Entrypoint.postinit()
+   .. py:method:: kser.entry.Entrypoint.postinit()
 
-    Trigger call on execution post initialization.
+       Trigger call on execution post initialization.
 
-    :param cdumay_result.Result result: Current execution result that led to the success.
-    :return: Return back the result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Current execution result that led to the success.
+       :return: Return back the result
+       :rtype: cdumay_result.Result
 
-.. py:method:: Entrypoint.postrun(result)
+   .. py:method:: kser.entry.Entrypoint.postrun(result)
 
-    Trigger call on execution post run. This trigger is called regardless of execution result.
+       Trigger call on execution post run. This trigger is called regardless of execution result.
 
-    :param cdumay_result.Result result: Current execution result.
-    :return: Return back the result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Current execution result.
+       :return: Return back the result
+       :rtype: cdumay_result.Result
 
-.. py:method:: Entrypoint.prerun()
+   .. py:method:: kser.entry.Entrypoint.prerun()
 
-    Trigger call before the execution.
+       Trigger call before the execution.
 
-.. py:method:: Entrypoint.run()
+   .. py:method:: kser.entry.Entrypoint.run()
 
-    The entrypoint body intended to be overwrite.
+       The entrypoint body intended to be overwrite.
 
-.. py:method:: Entrypoint.to_Message(result=None)
+   .. py:method:: kser.entry.Entrypoint.to_Message(result=None)
 
-    Serialize an entrypoint into a :class:`kser.schemas.Message`.
+       Serialize an entrypoint into a :class:`kser.schemas.Message`.
 
-    :param cdumay_result.Result result: Execution result.
-    :return: Return a message.
-    :rtype: kser.schemas.Message
+       :param cdumay_result.Result result: Execution result.
+       :return: Return a message.
+       :rtype: kser.schemas.Message
 
-.. py:method:: Entrypoint.unsafe_execute(result=None)
+   .. py:method:: kser.entry.Entrypoint.unsafe_execute(result=None)
 
-    Unlike :py:meth:`Entrypoint.execute` this method launch the entrypoint execution without catching execption.
+       Unlike :py:meth:`kser.entry.Entrypoint.execute` this method launch the entrypoint execution without catching execption.
 
-    :param cdumay_result.Result result: Previous task result
-    :return: The execution result
-    :rtype: cdumay_result.Result
+       :param cdumay_result.Result result: Previous task result
+       :return: The execution result
+       :rtype: cdumay_result.Result
 
 Example usage
 -------------
@@ -145,7 +145,7 @@ Has we can see there is a required parameter `name`. Let's see what's happen if 
     2018-02-21 18:35:47,493 DEBUG    Hello.PreRun: __main__.Hello[f581fb61-0de1-489c-a0df-2c03ce1d35b4]
     2018-02-21 18:35:47,495 ERROR    Hello.Failed: __main__.Hello[f581fb61-0de1-489c-a0df-2c03ce1d35b4]: Missing parameter: name
 
-What's happen if we uses :py:meth:`Entrypoint.unsafe_execute` instead of :py:meth:`Entrypoint.execute`:
+What's happen if we uses :py:meth:`kser.entry.Entrypoint.unsafe_execute` instead of :py:meth:`kser.entry.Entrypoint.execute`:
 
 .. code-block:: python
 

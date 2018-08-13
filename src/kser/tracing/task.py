@@ -9,15 +9,15 @@
 
 import logging
 
+from cdumay_opentracing import OpenTracingSpan, OpenTracingManager
 from kser import KSER_METRICS_ENABLED, KSER_TASK_COUNT
 from kser.schemas import Message
-from kser.tracing import OpentracingBase
+from kser.sequencing.task import Task
 
 logger = logging.getLogger(__name__)
 
 
-class OpentracingTask(OpentracingBase):
-
+class OpentracingTask(Task):
     def _prerun(self):
         """ To execute before running message
 
@@ -28,11 +28,10 @@ class OpentracingTask(OpentracingBase):
             self.uuid, entrypoint=self.__class__.path,
             params=self.params, metadata=self.metadata
         ).dump()))
-
-        with self.create_span('PreRun') as span:
+        with OpenTracingSpan(self, self.label("PreRun")) as span:
             self.check_required_params()
             out = self.prerun()
-            span.log_kv(dict(event="done"))
+            OpenTracingManager.log_kv(span, self, "done")
             return out
 
     def _run(self):
@@ -49,9 +48,9 @@ class OpentracingTask(OpentracingBase):
             params=self.params, metadata=self.metadata
         ).dump()))
 
-        with self.create_span('Run') as span:
+        with OpenTracingSpan(self, self.label("Run")) as span:
             out = self.run()
-            span.log_kv(dict(event="done."))
+            OpenTracingManager.log_kv(span, self, "done")
             return out
 
     def _postrun(self, result):
@@ -66,9 +65,9 @@ class OpentracingTask(OpentracingBase):
             params=self.params, metadata=self.metadata
         ).dump()))
 
-        with self.create_span('PostRun') as span:
+        with OpenTracingSpan(self, self.label("PostRun")) as span:
             out = self.postrun(result)
-            span.log_kv(dict(event="done."))
+            OpenTracingManager.log_kv(span, self, "done")
             return out
 
     def unsafe_execute(self, result=None):
@@ -80,8 +79,8 @@ class OpentracingTask(OpentracingBase):
         if result:
             self.result += result
 
-        with self.create_root_span("Execute") as span:
+        with OpenTracingSpan(self, self.label("Execute")) as span:
             self._prerun()
             out = self._onsuccess(self._postrun(self._run()))
-            span.log_kv(dict(event="done."))
+            OpenTracingManager.log_kv(span, self, "done")
             return out

@@ -44,6 +44,7 @@ way to implement your own is to override the triggers methods (prefixed with '_'
 
             return self.run()
 
-.. note::
+.. seealso::
 
-    See `prometheus_client documentation <https://github.com/prometheus/client_python>`_ for more info.
+   `prometheus_client <https://github.com/prometheus/client_python>`_
+      Prometheus instrumentation library for Python applications.

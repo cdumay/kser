@@ -26,5 +26,6 @@ Features & API Focus
 
    entry.rst
    crypto.rst
+   sequencing.rst
    metrics.rst
    opentracing.rst

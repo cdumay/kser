@@ -189,6 +189,12 @@ class Operation(Task):
             print("  - {}".format(task))
 
     def next(self, task):
+        """ Find the next task
+
+        :param kser.sequencing.task.Task task: previous task
+        :return: The next task
+        :rtype: kser.sequencing.task.Task or None
+        """
         for idx, otask in enumerate(self.tasks[:-1]):
             if otask.uuid == task.uuid:
                 return self.tasks[idx + 1]
@@ -257,7 +263,7 @@ class Operation(Task):
 
         :param dict kwargs: tasks parameters (~=context)
         :return: list of tasks
-        :rtype: list(kser.sequencing.operation.Operation)
+        :rtype: list(kser.sequencing.task.Task)
         """
         return list()
 

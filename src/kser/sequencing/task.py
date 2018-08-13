@@ -22,6 +22,14 @@ class Task(Entrypoint):
 
     def __init__(self, uuid=None, params=None, status="PENDING", result=None,
                  metadata=None):
+        """ A task is a :class:`kser.entry.Entrypoint` with additional attributes.
+
+        :param str uuid: task unique identifier
+        :param dict params: task parameter
+        :param str status: task status
+        :param cdumay_result.Result result: forwarded result from a previous task
+        :param dict metadata: task context
+        """
         self.status = status
         Entrypoint.__init__(
             self, uuid=uuid, params=params, result=result, metadata=metadata
@@ -32,6 +40,13 @@ class Task(Entrypoint):
         return attr, getattr(getattr(self, item, self), attr, None)
 
     def log(self, message, level=logging.INFO, *args, **kwargs):
+        """ Send log entry
+
+        :param str message: log message
+        :param int level: `Logging level <https://docs.python.org/3/library/logging.html#levels>`_
+        :param list args: log record arguments
+        :param dict kwargs: log record key argument
+        """
         msg = "{}.{}: {}[{}]: {}".format(
             self.__class__.__name__, self.status, self.__class__.path,
             self.uuid, message

@@ -1,3 +1,4 @@
+
 .. image:: https://img.shields.io/pypi/v/kser.svg
    :target: https://pypi.python.org/pypi/kser/
    :alt: Latest Version
@@ -153,4 +154,4 @@ Other links
 License
 =======
 
-MIT license
+Licensed under MIT license (`LICENSE <./LICENSE>`_ or http://opensource.org/licenses/MIT)
