@@ -174,9 +174,12 @@ class Operation(Task):
     def unsafe_execute(self, result=None):
         self._prerun()
         for task in self.tasks:
-            result = task.unsafe_execute(result=result)
-            if result.retcode != 0:
-                return self._onerror(result)
+            if task.status != 'SUCCESS':
+                result = task.unsafe_execute(result=result)
+                if result.retcode != 0:
+                    return self._onerror(result)
+            else:
+                result = task.result
 
         return self._onsuccess(result=result)
 
@@ -195,9 +198,13 @@ class Operation(Task):
         :return: The next task
         :rtype: kser.sequencing.task.Task or None
         """
+        uuid = str(task.uuid)
         for idx, otask in enumerate(self.tasks[:-1]):
-            if otask.uuid == task.uuid:
-                return self.tasks[idx + 1]
+            if otask.uuid == uuid:
+                if self.tasks[idx + 1].status != 'SUCCESS':
+                    return self.tasks[idx + 1]
+                else:
+                    uuid = self.tasks[idx + 1].uuid
 
     def launch_next(self, task=None, result=None):
         """ Launch next task or finish operation
