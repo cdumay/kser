@@ -8,9 +8,11 @@
 """
 import logging
 
+import opentracing
 from cdumay_opentracing import OpenTracingSpan, OpenTracingManager
 from kser.schemas import Message
 from kser.sequencing.operation import Operation
+from kser.tracing.driver import OpenTracingKserDriver
 
 logger = logging.getLogger(__name__)
 
@@ -63,3 +65,19 @@ class OpentracingOperation(Operation):
             result = self._onsuccess(self._postrun(result=result))
             OpenTracingManager.log_kv(span, self, "done")
             return result
+
+    # noinspection PyPep8Naming
+    def to_Message(self, result=None):
+        """ Entrypoint -> Message
+
+        :param kser.result.Result result: Execution result
+        :return: Kafka message
+        :rtype kser.schemas.Message
+        """
+        current_span = OpenTracingManager.get_current_span(self)
+        if current_span:
+            OpenTracingKserDriver.inject(current_span, self)
+        return Message(
+            uuid=self.uuid, entrypoint=self.__class__.path, params=self.params,
+            result=result if result else self.result, metadata=self.metadata
+        )
