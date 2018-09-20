@@ -9,10 +9,10 @@
 
 import logging
 
-from cdumay_opentracing import OpenTracingManager
+import opentracing
 from kser.schemas import Message
 from kser.sequencing.task import Task
-from kser.tracing.proxy import KserSpanProxy
+from kser.tracing.proxy import KserSpan
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,11 @@ class OpentracingTask(Task):
         if result:
             self.result += result
 
-        with OpenTracingManager.create_span(self, self.label("Execute")):
-            self._prerun()
+        with opentracing.tracer.start_span(
+                obj=self, operation_name=self.label("Execute"),
+                span_factory=KserSpan) as span:
             self.result = self._onsuccess(self._postrun(self._run()))
+            span.obj = self
             return self.result
 
     # noinspection PyPep8Naming
@@ -40,9 +42,8 @@ class OpentracingTask(Task):
         :return: Kafka message
         :rtype kser.schemas.Message
         """
-        current_span = OpenTracingManager.get_current_span(self)
-        if current_span:
-            KserSpanProxy.inject(current_span, self)
+        if opentracing.tracer.current_span:
+            KserSpan.inject(opentracing.tracer.current_span, self)
 
         return Message(
             uuid=self.uuid, entrypoint=self.__class__.path, params=self.params,

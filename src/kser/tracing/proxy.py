@@ -9,11 +9,11 @@
 import json
 
 import opentracing
-from cdumay_opentracing import SpanProxy
+from cdumay_opentracing import Span
 from cdumay_result import ResultSchema
 
 
-class KserSpanProxy(SpanProxy):
+class KserSpan(Span):
     @classmethod
     def extract(cls, obj):
         """ Extract span context from the given object
@@ -24,7 +24,7 @@ class KserSpanProxy(SpanProxy):
         """
         trace = obj.metadata.get('__parent-span__', dict())
         if len(trace) > 0:
-            return opentracing.tracer.extract(cls.FORMAT, obj.trace)
+            return opentracing.tracer.extract(cls.FORMAT, trace)
 
     @classmethod
     def inject(cls, span, obj):
@@ -49,7 +49,7 @@ class KserSpanProxy(SpanProxy):
         return dict(uuid=obj.uuid, entrypoint=obj.__class__.path)
 
     @classmethod
-    def postrun(cls, span, obj, **kwargs):
+    def _postrun(cls, span, obj, **kwargs):
         """ Trigger to execute just before closing the span
 
         :param opentracing.span.Span  span: the SpanContext instance
