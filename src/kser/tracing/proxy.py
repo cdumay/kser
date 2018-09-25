@@ -16,7 +16,7 @@ from cdumay_result import ResultSchema
 class KserSpan(Span):
     @classmethod
     def name(cls, obj):
-        return obj(obj.__class__.path)
+        return str(obj.__class__.path)
 
     @classmethod
     def extract_span(cls, obj):
