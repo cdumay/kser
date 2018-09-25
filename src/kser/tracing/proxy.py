@@ -15,6 +15,16 @@ from cdumay_result import ResultSchema
 
 class KserSpan(Span):
     @classmethod
+    def extract_span(cls, obj):
+        trace = obj.metadata.get('__parent-span__', dict())
+        if len(trace) > 0:
+            return cls.span_from_dict(trace)
+
+    @classmethod
+    def inject_span(cls, span, obj):
+        obj.metadata['__parent-span__'] = cls.span_serialize(span)
+
+    @classmethod
     def extract(cls, obj):
         """ Extract span context from the given object
 
@@ -22,9 +32,9 @@ class KserSpan(Span):
         :return: a SpanContext instance extracted from the inner span object or None if no
             such span context could be found.
         """
-        trace = obj.metadata.get('__parent-span__', dict())
-        if len(trace) > 0:
-            return opentracing.tracer.extract(cls.FORMAT, trace)
+        span = cls.extract_span(obj)
+        if span:
+            return span.context
 
     @classmethod
     def inject(cls, span, obj):
@@ -34,9 +44,7 @@ class KserSpan(Span):
         :param Any obj: Object to use as context
         """
         obj.metadata['__parent-span__'] = dict()
-        opentracing.tracer.inject(
-            span, cls.FORMAT, obj.metadata['__parent-span__']
-        )
+        cls.inject_span(span, obj.metadata['__parent-span__'])
 
     @classmethod
     def extract_tags(cls, obj):
