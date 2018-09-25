@@ -15,6 +15,10 @@ from cdumay_result import ResultSchema
 
 class KserSpan(Span):
     @classmethod
+    def name(cls, obj):
+        return obj.entrypoint
+
+    @classmethod
     def extract_span(cls, obj):
         trace = obj.metadata.get('__parent-span__', dict())
         if len(trace) > 0:

@@ -19,7 +19,6 @@ class OpentracingOperation(Operation):
     def unsafe_execute(self, result=None):
         with opentracing.tracer.start_span(
                 obj=self, child_of=KserSpan.extract_span(self),
-                operation_name=self.label("Execute"),
                 span_factory=KserSpan) as span:
             for task in self.tasks:
                 KserSpan.inject_span(span, task)

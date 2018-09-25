@@ -28,7 +28,6 @@ class OpentracingTask(Task):
 
         with opentracing.tracer.start_span(
                 obj=self, child_of=KserSpan.extract_span(self),
-                operation_name=self.label("Execute"),
                 span_factory=KserSpan) as span:
             self.result = self._onsuccess(self._postrun(self._run()))
             span.obj = self
