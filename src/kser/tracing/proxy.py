@@ -70,6 +70,12 @@ class KserSpan(Span):
         """
         for key, value in ResultSchema().dump(obj.result).items():
             if isinstance(value, (list, tuple, dict)):
-                span.set_tag("result.{}".format(key), json.dumps(value))
+                try:
+                    span.set_tag("result.{}".format(key), json.dumps(value))
+                except Exception:
+                    try:
+                        span.set_tag("result.{}".format(key), value)
+                    except Exception:
+                        span.set_tag("result.{}".format(key), "N/A")
             else:
                 span.set_tag("result.{}".format(key), value)
