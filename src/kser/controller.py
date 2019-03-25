@@ -7,6 +7,7 @@
 
 """
 import logging
+import os
 
 from cdumay_error import ValidationError
 from kser.entry import Entrypoint
@@ -14,6 +15,8 @@ from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
+
+os.environ.setdefault("RUNNING_FILE", "/var/run/kser-run.lock")
 
 
 class BaseController(object):
@@ -113,6 +116,16 @@ class Controller(BaseController):
     TRANSPORT = Message
 
     @classmethod
+    def start_processing(cls, kmsg):
+        with open(os.environ['RUNNING_FILE'], 'w') as file:
+            file.write("{}[{}]".format(kmsg.entrypoint, kmsg.uuid))
+
+    @classmethod
+    def stop_processing(cls):
+        with open(os.environ['RUNNING_FILE'], 'w') as file:
+            file.write("")
+
+    @classmethod
     def register(cls, name, entrypoint):
         """ Register a new entrypoint
 
@@ -147,6 +160,7 @@ class Controller(BaseController):
             return Result.from_exception(exc)
 
         try:
+            cls.start_processing(kmsg)
             if kmsg.entrypoint not in cls.ENTRYPOINTS:
                 raise ValidationError(
                     "Entrypoint '{}' not registred".format(kmsg.entrypoint),
@@ -164,6 +178,7 @@ class Controller(BaseController):
             result = Result.from_exception(exc, kmsg.uuid)
 
         finally:
+            cls.stop_processing()
             # noinspection PyUnboundLocalVariable
             if result and result.retcode < 300:
                 return cls._onsuccess(kmsg=kmsg, result=result)
