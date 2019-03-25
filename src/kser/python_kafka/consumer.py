@@ -8,6 +8,7 @@
 """
 import logging
 import os
+import time
 
 from kafka import KafkaConsumer
 from kser import KSER_METRICS_ENABLED
@@ -23,6 +24,9 @@ class Consumer(object):
         self.client = KafkaConsumer(**config)
         self.client.subscribe(topics)
 
+    def is_active(self):
+        return True
+
     def run(self):
         """ Run consumer
         """
@@ -35,11 +39,17 @@ class Consumer(object):
             )
 
         logger.info("{}.Starting...".format(self.__class__.__name__))
-        for msg in self.client:
-            data = msg.value.decode('utf-8')
-            if self.client.config['enable_auto_commit'] is False:
-                self.client.commit()
-                logger.debug(
-                    "{}: Manual commit done.".format(self.__class__.__name__)
-                )
-            self.REGISTRY.run(data)
+
+        while True:
+            if self.is_active() is True:
+                msg = next(self.client)
+                data = msg.value.decode('utf-8')
+                if self.client.config['enable_auto_commit'] is False:
+                    self.client.commit()
+                    logger.debug("{}: Manual commit done.".format(
+                        self.__class__.__name__
+                    ))
+                self.REGISTRY.run(data)
+            else:
+                logger.warning("Consumer is paused")
+                time.sleep(60)
