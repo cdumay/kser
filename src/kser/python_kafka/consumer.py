@@ -15,7 +15,6 @@ from kser import KSER_METRICS_ENABLED
 from kser.controller import Controller
 
 logger = logging.getLogger(__name__)
-os.environ.setdefault("DISABLE_CONSUMER", "/var/run/kser-consumer.lock")
 
 
 class Consumer(object):
@@ -24,11 +23,23 @@ class Consumer(object):
     def __init__(self, config, topics):
         self.client = KafkaConsumer(**config)
         self.client.subscribe(topics)
-        if os.path.exists(os.environ['DISABLE_CONSUMER']):
-            os.remove(os.environ['DISABLE_CONSUMER'])
+        self.clean_lock()
+
+    def __del__(self):
+        for lockfile in (os.environ['LOCK_FILE'], os.environ['RUNNING_FILE']):
+            if os.path.exists(lockfile):
+                logger.debug("Cleaning existing lock file: {}".format(lockfile))
+                os.remove(lockfile)
+
+    def clean_lock(self):
+        if os.path.exists(os.environ['LOCK_FILE']):
+            logger.debug("Cleaning existing pause file: {}".format(
+                os.environ['LOCK_FILE']
+            ))
+            os.remove(os.environ['LOCK_FILE'])
 
     def is_active(self):
-        return not os.path.exists(os.environ['DISABLE_CONSUMER'])
+        return not os.path.exists(os.environ['LOCK_FILE'])
 
     def run(self):
         """ Run consumer
