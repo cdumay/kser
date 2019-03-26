@@ -26,7 +26,6 @@ setup(
     extras_require={
         'confluent': ['confluent-kafka'],
         'http': ['cdumay-rest-client>=0.1'],
-        'crypto': ['csodium==0.0.3'],
         'pykafka': ['kafka-python'],
         'prometheus': ['prometheus_client'],
         'opentracing': ['cdumay-opentracing>=0.1.8']

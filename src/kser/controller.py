@@ -13,7 +13,6 @@ from cdumay_error import ValidationError
 from kser.entry import Entrypoint
 from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
-from kser import __hostname__
 
 logger = logging.getLogger(__name__)
 

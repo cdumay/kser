@@ -6,7 +6,7 @@ This module allow you to encrypt and decrypt messages in kafka
 Install
 -------
 
-    pip install kser[crypto]
+    pip install kser-crypto[pykafka]
 
 API focus
 ---------
@@ -38,66 +38,30 @@ Example
 
 For this example, we'll use `kafka-python <https://github.com/dpkp/kafka-python>`_ as kafka backend.
 
+.. note::
+
+   Make sure to have the environment variable **KSER_SECRETBOX_KEY** definded.
+
 **Consumer example**:
 
 .. code-block:: python
    :linenos:
 
-    from kser.controller import Controller
-    from kser.crypto import CryptoMessage
-    from kser.python_kafka.consumer import Consumer
+    from kser_crypto.python_kafka.consumer import CryptoConsumer
 
-
-    class CryptoController(Controller):
-        TRANSPORT = CryptoMessage
-
-
-    class CryptoConsumer(Consumer):
-        REGISTRY = CryptoController
-
-
-    if __name__ == '__main__':
-        consumer = CryptoConsumer(config=dict(...), topics=list(...))
-        consumer.run()
+    consumer = CryptoConsumer(config=dict(...), topics=[...])
+    consumer.run()
 
 **Producer example**:
 
 .. code-block:: python
    :linenos:
 
-    import os
+    import time
     from uuid import uuid4
-
-    from cdumay_result import Result
-    from kser.crypto import CryptoSchema
-    from kser.python_kafka.producer import Producer
     from kser.schemas import Message
+    from kser_crypto.python_kafka.producer import CryptoProducer
 
-
-    class CryptoProducer(Producer):
-        # noinspection PyUnusedLocal
-        def send(self, topic, kmsg, timeout=60):
-            result = Result(uuid=kmsg.uuid)
-            try:
-                self.client.send(topic, CryptoSchema(context=dict(
-                    secretbox_key=os.getenv("KSER_SECRETBOX_KEY", None)
-                )).encode(self._onmessage(kmsg)).encode("UTF-8"))
-
-                result.stdout = "Message {}[{}] sent in {}".format(
-                    kmsg.entrypoint, kmsg.uuid, topic
-                )
-                self.client.flush()
-
-            except Exception as exc:
-                result = Result.from_exception(exc, kmsg.uuid)
-
-            finally:
-                if result.retcode < 300:
-                    return self._onsuccess(kmsg=kmsg, result=result)
-                else:
-                    return self._onerror(kmsg=kmsg, result=result)
-
-
-    if __name__ == '__main__':
-        producer = CryptoProducer(config=dict(...))
-        producer.send("my.topic", Message(uuid=str(uuid4()), entrypoint="myTest"))
+    producer = CryptoProducer(config=dict(...))
+    producer.send("test", Message(uuid=str(uuid4()), entrypoint="myTest"))
+    time.sleep(1)
