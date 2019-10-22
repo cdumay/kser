@@ -1,2 +1,2 @@
-cdumay-error>=0.1
-cdumay-result>=0.1.3
+cdumay-error>=0.1.8
+cdumay-result>=0.1.6

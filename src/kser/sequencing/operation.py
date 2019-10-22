@@ -157,17 +157,20 @@ class Operation(Task):
         :rtype: cdumay_result.Result
         """
         self._set_status("FAILED", result)
+        extra = dict(
+            kmsg=Message(
+                self.uuid, entrypoint=self.__class__.path, params=self.params
+            ).dump(),
+            kresult=ResultSchema().dump(result) if result else dict()
+        )
+        error = result.search_value("error")
+        if error:
+            extra['error'] = error
+
         logger.error(
             "{}.Failed: {}[{}]: {}".format(
                 self.__class__.__name__, self.__class__.path, self.uuid, result
-            ),
-            extra=dict(
-                kmsg=Message(
-                    self.uuid, entrypoint=self.__class__.path,
-                    params=self.params
-                ).dump(),
-                kresult=ResultSchema().dump(result) if result else dict()
-            )
+            ), extra=extra
         )
         return self.onerror(result)
 

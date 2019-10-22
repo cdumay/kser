@@ -9,7 +9,7 @@
 import logging
 import os
 
-from cdumay_error import ValidationError
+from cdumay_error import ValidationError, from_exc
 from kser.entry import Entrypoint
 from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
@@ -151,13 +151,14 @@ class Controller(BaseController):
         try:
             kmsg = cls._onmessage(cls.TRANSPORT.loads(raw_data))
         except Exception as exc:
+            error = from_exc(exc)
             logger.error(
                 "{}.ImportError: Failed to load data from kafka: {}".format(
                     cls.__name__, exc
                 ),
-                extra=dict(kafka_raw_data=raw_data)
+                extra=dict(kafka_raw_data=raw_data, error=error.to_dict())
             )
-            return Result.from_exception(exc)
+            return Result.from_error(error)
 
         try:
             cls.start_processing(kmsg)
