@@ -8,11 +8,14 @@
 """
 from cdumay_error import ValidationError
 import marshmallow.exceptions
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, EXCLUDE
 from cdumay_result import ResultSchema, Result
 
 
 class BaseSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
     uuid = fields.String(required=True)
     entrypoint = fields.String(required=True)
     params = fields.Dict(default=dict)
