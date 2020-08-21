@@ -12,7 +12,7 @@ executed on Kafka consumers.
 .. image:: _static/kser.png
 
 #. A message comes from Kafka.
-#. Consumer deserialize message and send it to the "router" witch dispatch the message to the registry.
+#. Consumer deserialize message and send it to the "router" which dispatch the message to the registry.
 #. Registry loads the correct entrypoint based on the message content.
 #. Registry execute the entrypoint with the message data and return a result.
 #. Result is sent back to the router which dispatch it.
