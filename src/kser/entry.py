@@ -9,7 +9,7 @@
 import logging
 from uuid import uuid4
 
-from cdumay_error import ValidationError
+from cdumay_error.types import ValidationError
 from cdumay_result import Result, ResultSchema
 from kser import KSER_TASK_COUNT, __hostname__, KSER_METRICS_ENABLED, \
     KSER_TASKS_STATUS

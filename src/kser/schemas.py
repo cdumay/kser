@@ -6,7 +6,7 @@
 
 
 """
-from cdumay_error import ValidationError
+from cdumay_error.types import ValidationError
 import marshmallow.exceptions
 from marshmallow import Schema, fields, EXCLUDE
 from cdumay_result import ResultSchema, Result

@@ -9,7 +9,8 @@
 import logging
 import os
 
-from cdumay_error import ValidationError, from_exc
+from cdumay_error import from_exc
+from cdumay_error.types import ValidationError
 from kser.entry import Entrypoint
 from cdumay_result import Result, ResultSchema
 from kser.schemas import Message

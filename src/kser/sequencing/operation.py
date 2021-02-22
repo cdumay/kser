@@ -8,7 +8,7 @@
 """
 import logging
 
-from cdumay_error import ValidationError
+from cdumay_error.types import ValidationError
 from cdumay_result import Result, ResultSchema
 from kser.schemas import Message
 from kser.sequencing.task import Task

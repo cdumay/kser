@@ -7,3 +7,4 @@
 __pycache__
 /build/
 .jira-release.yml
+.changelog.json
