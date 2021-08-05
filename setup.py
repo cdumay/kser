@@ -28,7 +28,6 @@ setup(
         'http': ['cdumay-rest-client>=0.1'],
         'pykafka': ['kafka-python'],
         'prometheus': ['prometheus_client'],
-        'opentracing': ['cdumay-opentracing>=0.1.8']
     },
     entry_points="""
 """,
