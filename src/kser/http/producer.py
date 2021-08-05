@@ -6,12 +6,14 @@
 
 
 """
-from kser.controller import BaseController
-from cdumay_result import Result
 from cdumay_rest_client.client import RESTClient
+from cdumay_result import Result
+from kser.controller import BaseController
 
 
 class Producer(BaseController):
+    """Mother class for producers"""
+
     def __init__(self, config):
         """ Create new Producer instance using provided configuration dict.
 

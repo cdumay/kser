@@ -6,14 +6,17 @@
 
 
 """
-from cdumay_error.types import ValidationError
 import marshmallow.exceptions
-from marshmallow import Schema, fields, EXCLUDE
+from cdumay_error.types import ValidationError
 from cdumay_result import ResultSchema, Result
+from marshmallow import Schema, fields, EXCLUDE
 
 
 class BaseSchema(Schema):
+    """Entrypoint schema"""
+
     class Meta:
+        """Meta data"""
         unknown = EXCLUDE
 
     uuid = fields.String(required=True)
@@ -22,6 +25,7 @@ class BaseSchema(Schema):
 
 
 class Base(object):
+    """Mother class for entrypoint"""
     MARSHMALLOW_SCHEMA = BaseSchema()
 
     def __init__(self, uuid, entrypoint, params=None):
@@ -30,11 +34,11 @@ class Base(object):
         self.params = params if params else dict()
 
     def dump(self):
-        """description of dump"""
+        """Dump entrypoint into a dict"""
         return self.MARSHMALLOW_SCHEMA.dump(self)
 
     def dumps(self):
-        """description of dumps"""
+        """Dump entrypoint into a string"""
         return self.MARSHMALLOW_SCHEMA.dumps(self)
 
     def __str__(self):
@@ -42,16 +46,18 @@ class Base(object):
 
 
 class MessageSchema(BaseSchema):
+    """Message schema"""
     result = fields.Nested(ResultSchema, missing=None)
     metadata = fields.Dict()
 
 
 class Message(Base):
+    """Message"""
     MARSHMALLOW_SCHEMA = MessageSchema()
 
     @classmethod
     def loads(cls, json_data):
-        """description of load"""
+        """Load message from a string"""
         try:
             return cls(**cls.MARSHMALLOW_SCHEMA.loads(json_data))
         except marshmallow.exceptions.ValidationError as exc:

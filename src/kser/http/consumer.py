@@ -6,20 +6,17 @@
 
 
 """
-import time
 import logging
+import time
+
 from cdumay_rest_client.client import RESTClient
 from kser.controller import Controller
 
 logger = logging.getLogger(__name__)
 
 
-class LoopInfo(object):
-    def __init__(self, sleep):
-        self.sleep = sleep
-
-
 class Consumer(object):
+    """Http consumer"""
     REGISTRY = Controller
 
     def __init__(self, config, topics):
@@ -32,6 +29,7 @@ class Consumer(object):
         self.topics = topics
 
     def call_kafka(self, topic, batch_size=1):
+        """Call Kafka"""
         logger.debug("{}.Checking {}".format(self.__class__.__name__, topic))
         data = self.client.do_request(
             method="GET", params=dict(limit=batch_size),

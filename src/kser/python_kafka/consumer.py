@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class Consumer(object):
+    """Mother class for Python Kafka consumer"""
     REGISTRY = Controller
 
     def __init__(self, config, topics):
@@ -26,25 +27,35 @@ class Consumer(object):
         self.clean_lock()
 
     def __del__(self):
+        # noinspection PyTypeChecker
         for lockfile in (os.environ['LOCK_FILE'], os.environ['RUNNING_FILE']):
             if os.path.exists(lockfile):
                 logger.debug("Cleaning existing lock file: {}".format(lockfile))
                 os.remove(lockfile)
 
-    def clean_lock(self):
+    @staticmethod
+    def clean_lock():
+        """Remove lock file"""
+        # noinspection PyTypeChecker
         if os.path.exists(os.environ['LOCK_FILE']):
+            # noinspection PyTypeChecker
             logger.debug("Cleaning existing pause file: {}".format(
                 os.environ['LOCK_FILE']
             ))
+            # noinspection PyTypeChecker
             os.remove(os.environ['LOCK_FILE'])
 
-    def is_active(self):
+    @staticmethod
+    def is_active():
+        """Is the lock file exists"""
+        # noinspection PyTypeChecker
         return not os.path.exists(os.environ['LOCK_FILE'])
 
     def run(self):
         """ Run consumer
         """
         if KSER_METRICS_ENABLED == "yes":
+            # noinspection PyProtectedMember
             from prometheus_client import start_http_server
             logger.info("Metric.Starting...")
             start_http_server(

@@ -12,6 +12,7 @@ from kser.controller import BaseController
 
 
 class Producer(BaseController):
+    """Mother class for producers"""
     def __init__(self, config):
         """ Create new Producer instance using provided configuration dict.
 

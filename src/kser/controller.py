@@ -11,16 +11,19 @@ import os
 
 from cdumay_error import from_exc
 from cdumay_error.types import ValidationError
-from kser.entry import Entrypoint
 from cdumay_result import Result, ResultSchema
+from kser.entry import Entrypoint
 from kser.schemas import Message
 
 logger = logging.getLogger(__name__)
 
+# noinspection PyTypeChecker
 os.environ.setdefault("RUNNING_FILE", "/var/run/kser-run.lock")
 
 
 class BaseController(object):
+    """Mother class for controllers"""
+
     @classmethod
     def _onsuccess(cls, kmsg, result):
         """ To execute on execution success
@@ -113,16 +116,21 @@ class BaseController(object):
 
 
 class Controller(BaseController):
+    """Controller with entrypoints"""
     ENTRYPOINTS = dict()
     TRANSPORT = Message
 
     @classmethod
     def start_processing(cls, kmsg):
+        """write current message into the processing file"""
+        # noinspection PyTypeChecker
         with open(os.environ['RUNNING_FILE'], 'w') as file:
             file.write("{}[{}]".format(kmsg.entrypoint, kmsg.uuid))
 
     @classmethod
     def stop_processing(cls):
+        """clean the processing file"""
+        # noinspection PyTypeChecker
         with open(os.environ['RUNNING_FILE'], 'w') as file:
             file.write("")
 
@@ -134,6 +142,7 @@ class Controller(BaseController):
         :param kser.entry.Entrypoint entrypoint: class to load
         :raises ValidationError: Invalid entry
         """
+        # noinspection PyTypeChecker
         if not issubclass(entrypoint, Entrypoint):
             raise ValidationError(
                 "Invalid type for entry '{}', MUST implement "

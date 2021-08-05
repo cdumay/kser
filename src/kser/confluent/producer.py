@@ -6,14 +6,16 @@
 
 
 """
+from cdumay_result import Result
 # noinspection PyProtectedMember
 # noinspection PyUnresolvedReferences
 from confluent_kafka import Producer as KafkaProducer
-from cdumay_result import Result
 from kser.controller import BaseController
 
 
 class Producer(BaseController):
+    """Mother class for producers"""
+
     def __init__(self, config):
         """ Create new Producer instance using provided configuration dict.
 

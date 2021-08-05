@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class Consumer(object):
+    """Mother class for confluent consumers"""
     REGISTRY = Controller
 
     def __init__(self, config, topics):
@@ -30,6 +31,7 @@ class Consumer(object):
         """ Run consumer
         """
         if KSER_METRICS_ENABLED == "yes":
+            # noinspection PyProtectedMember
             from prometheus_client import start_http_server
             logger.info("Metric.Starting...")
             start_http_server(

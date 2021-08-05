@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class Operation(Task):
+    """Mother class for operations"""
     TASKS = ()
 
     def check_required_params(self):
@@ -36,10 +37,12 @@ class Operation(Task):
 
     @classmethod
     def new(cls, **kwargs):
+        """New operation"""
         return cls(**cls.parse_inputs(**kwargs))
 
     @classmethod
     def parse_inputs(cls, **kwargs):
+        """???"""
         return kwargs
 
     def __init__(self, uuid=None, status="PENDING", params=None, tasks=None,
@@ -175,6 +178,11 @@ class Operation(Task):
         return self.onerror(result)
 
     def unsafe_execute(self, result=None):
+        """ un-wrapped execution, can raise excepetion
+
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
         self._prerun()
         for task in self.tasks:
             if task.status != 'SUCCESS':
@@ -221,6 +229,7 @@ class Operation(Task):
         if task:
             next_task = self.next(task)
             if next_task:
+                # noinspection PyUnresolvedReferences
                 return next_task.send(result=result)
             else:
                 return self.set_status(task.status, result)

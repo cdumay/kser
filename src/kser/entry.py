@@ -19,12 +19,15 @@ logger = logging.getLogger(__name__)
 
 
 class EntrypointMeta(type):
+    """Provide path to all child classes"""
     @property
     def path(cls):
+        """Entrypoint full path"""
         return "{}.{}".format(cls.__module__, cls.__name__)
 
 
 class Entrypoint(object, metaclass=EntrypointMeta):
+    """Entrypoint mother class"""
     REQUIRED_FIELDS = []
 
     def __init__(self, uuid=None, params=None, result=None, metadata=None):
@@ -35,20 +38,21 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         self._post_init()
 
     def label(self, action=None):
+        """Format log prefix"""
         return "{}[{}]{}".format(
             self.__class__.__name__, self.uuid,
             " - {}".format(action) if action else ""
         )
 
     def _post_init(self):
-        """A post init trigger"""
+        """A post init trigger wrapper"""
         try:
             return self.postinit()
         except Exception as exc:
             return self._onerror(Result.from_exception(exc, uuid=self.uuid))
 
     def postinit(self):
-        """"""
+        """A post init trigger"""
 
     def check_required_params(self):
         """ Check if all required parameters are set"""
@@ -86,6 +90,7 @@ class Entrypoint(object, metaclass=EntrypointMeta):
         return self.onsuccess(result)
 
     def log(self, message, level=logging.INFO, *args, **kwargs):
+        """Log text with a prefix"""
         msg = "{}.MESSAGE: {}[{}]: {}".format(
             self.__class__.__name__, self.__class__.path, self.uuid, message
         )

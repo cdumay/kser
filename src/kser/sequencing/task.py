@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class Task(Entrypoint):
-    """"""
+    """Mother class for tasks"""
 
     @classmethod
     def init_by_id(cls, _id):
@@ -22,12 +22,13 @@ class Task(Entrypoint):
 
     def __init__(self, uuid=None, params=None, status="PENDING", result=None,
                  metadata=None):
-        """ A task is a :class:`kser.entry.Entrypoint` with additional attributes.
+        """ A task is a :class:`kser.entry.Entrypoint` with additional
+        attributes.
 
         :param str uuid: task unique identifier
         :param dict params: task parameter
         :param str status: task status
-        :param cdumay_result.Result result: forwarded result from a previous task
+        :param cdumay_result.Result result: Result from a previous task
         :param dict metadata: task context
         """
         self.status = status
@@ -36,6 +37,7 @@ class Task(Entrypoint):
         )
 
     def get_attr(self, item):
+        """Try to get attribute value"""
         attr = "{}Id".format(item)
         return attr, getattr(getattr(self, item, self), attr, None)
 
@@ -43,7 +45,7 @@ class Task(Entrypoint):
         """ Send log entry
 
         :param str message: log message
-        :param int level: `Logging level <https://docs.python.org/3/library/logging.html#levels>`_
+        :param int level: Logging level
         :param list args: log record arguments
         :param dict kwargs: log record key argument
         """
