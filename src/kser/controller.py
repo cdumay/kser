@@ -115,6 +115,31 @@ class BaseController(object):
         return kmsg
 
 
+class BaseProducer(BaseController):
+    """Base producer class"""
+
+    def _send(self, topic, kmsg, timeout=60):
+        """ Send the message into the given topic
+
+        :param str topic: a kafka topic
+        :param ksr.transport.Message kmsg: Message to serialize
+        :param int timeout: Timeout in seconds (not used in proto producer)
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+
+    def send(self, topic, kmsg, timeout=60):
+        """ Send the message into the given topic
+
+        :param str topic: a kafka topic
+        :param ksr.transport.Message kmsg: Message to serialize
+        :param int timeout: Timeout in seconds (not used in proto producer)
+        :return: Execution result
+        :rtype: kser.result.Result
+        """
+        return self._send(topic, kmsg, timeout)
+
+
 class Controller(BaseController):
     """Controller with entrypoints"""
     ENTRYPOINTS = dict()

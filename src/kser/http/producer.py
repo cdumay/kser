@@ -8,10 +8,10 @@
 """
 from cdumay_rest_client.client import RESTClient
 from cdumay_result import Result
-from kser.controller import BaseController
+from kser.controller import BaseProducer
 
 
-class Producer(BaseController):
+class Producer(BaseProducer):
     """Mother class for producers"""
 
     def __init__(self, config):
@@ -46,7 +46,7 @@ class Producer(BaseController):
         except Exception as exc:
             return Result.from_exception(exc)
 
-    def send(self, topic, kmsg):
+    def _send(self, topic, kmsg, timeout=60):
         """ Send the message into the given topic
 
         :param str topic: a kafka topic
@@ -58,7 +58,8 @@ class Producer(BaseController):
             self.client.do_request(
                 method="POST", params=dict(format="raw"),
                 path="/topic/{}".format(topic),
-                data=kmsg.MARSHMALLOW_SCHEMA.dump(kmsg)
+                data=kmsg.MARSHMALLOW_SCHEMA.dump(kmsg),
+                timeout=timeout
             )
             result = Result(
                 uuid=kmsg.uuid, stdout="Message sent: {} ({})".format(

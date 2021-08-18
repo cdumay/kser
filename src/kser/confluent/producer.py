@@ -10,10 +10,10 @@ from cdumay_result import Result
 # noinspection PyProtectedMember
 # noinspection PyUnresolvedReferences
 from confluent_kafka import Producer as KafkaProducer
-from kser.controller import BaseController
+from kser.controller import BaseProducer
 
 
-class Producer(BaseController):
+class Producer(BaseProducer):
     """Mother class for producers"""
 
     def __init__(self, config):
@@ -45,7 +45,7 @@ class Producer(BaseController):
             return Result.from_exception(exc)
 
     # noinspection PyUnusedLocal
-    def send(self, topic, kmsg, timeout=60):
+    def _send(self, topic, kmsg, timeout=60):
         """ Send the message into the given topic
 
         :param str topic: a kafka topic
