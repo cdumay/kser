@@ -28,6 +28,13 @@ setup(
         'http': ['cdumay-rest-client>=0.1'],
         'pykafka': ['kafka-python'],
         'prometheus': ['prometheus_client'],
+        "tests": [
+            "flake8",
+            "flake8-html",
+            "pytest",
+            "pytest-cov",
+            "pytest-html",
+        ]
     },
     entry_points="""
 """,

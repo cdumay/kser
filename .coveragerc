@@ -1,0 +1,8 @@
+[run]
+command_line = -m pytest --junitxml=reports/coverage/coverage.xml
+source = src
+omit = *tests*
+relative_files = True
+
+[report]
+show_missing = True

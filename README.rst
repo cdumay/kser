@@ -7,13 +7,24 @@
    :target: https://travis-ci.org/cdumay/kser
    :alt: Latest version
 
-
 .. image:: https://readthedocs.org/projects/kser/badge/?version=latest
    :target: http://kser.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+.. image:: https://img.shields.io/badge/license-BSD3-blue.svg
     :target: https://github.com/cdumay/kser/blob/master/LICENSE
+
+.. image:: https://github.com/cdumay/kser/blob/reports/junit/tests-badge.svg?raw=true
+   :target: https://htmlpreview.github.io/?https://github.com/cdumay/kser/blob/reports/junit/report.html
+   :alt: Tests
+
+.. image:: https://github.com/cdumay/kser/blob/reports/flake8/flake8-badge.svg?raw=true
+   :target: https://htmlpreview.github.io/?https://github.com/cdumay/kser/blob/reports/flake8/index.html
+   :alt: Lint
+
+.. image:: https://github.com/cdumay/kser/blob/reports/coverage/coverage-badge.svg?raw=true
+   :target: https://htmlpreview.github.io/?https://github.com/cdumay/kser/blob/reports/coverage/html/index.html
+   :alt: Coverage badge
 
 ==============================
 Kafka serialize python library
@@ -154,4 +165,4 @@ Other links
 License
 =======
 
-Licensed under MIT license (`LICENSE <./LICENSE>`_ or http://opensource.org/licenses/MIT)
+Licensed under `BSD 3-Clause License <./LICENSE>`_ or https://opensource.org/licenses/BSD-3-Clause.
