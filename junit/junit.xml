@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.764" timestamp="2023-08-03T15:25:01.848780" hostname="fv-az455-725"><testcase classname="tests.kser.test_install.InstallTest" name="test_install" time="0.003" /></testsuite></testsuites>
