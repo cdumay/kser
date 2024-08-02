@@ -61,6 +61,11 @@ There is also a light version using HTTP ideal to produce messages (not recommen
 
     $ pip install kser[http]
 
+dummy
+-----
+
+There is a dummy version for tests, no additional import required, just use / patch with the dummy module.
+
 Other
 =====
 

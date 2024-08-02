@@ -9,7 +9,7 @@
 
 import unittest
 
-import pkg_resources
+from importlib_metadata import distributions
 
 
 class InstallTest(unittest.TestCase):
@@ -17,4 +17,4 @@ class InstallTest(unittest.TestCase):
 
     def test_install(self):
         """Test module is installed"""
-        self.assertIn('kser', [x.key for x in pkg_resources.working_set])
+        self.assertIn("kser", [x.name for x in distributions()])
