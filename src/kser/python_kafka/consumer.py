@@ -8,9 +8,11 @@
 """
 import logging
 import os
+import sys
 import time
 
 from kafka import KafkaConsumer
+
 from kser import KSER_METRICS_ENABLED
 from kser.controller import Controller
 
@@ -51,6 +53,11 @@ class Consumer(object):
         # noinspection PyTypeChecker
         return not os.path.exists(os.environ['LOCK_FILE'])
 
+    @staticmethod
+    def should_stop():
+        """Should the consumer should keep running ?"""
+        return os.path.exists(os.environ["TERMINATE_FILE"])
+
     def run(self):
         """ Run consumer
         """
@@ -65,7 +72,7 @@ class Consumer(object):
 
         logger.info("{}.Starting...".format(self.__class__.__name__))
 
-        while True:
+        while not self.should_stop():
             if self.is_active() is True:
                 msg = next(self.client)
                 data = msg.value.decode('utf-8')
@@ -77,4 +84,9 @@ class Consumer(object):
                 self.REGISTRY.run(data)
             else:
                 logger.warning("Consumer is paused")
-                time.sleep(60)
+                time.sleep(30)
+
+
+        logger.info("Closing consumer and exiting")
+        self.client.close(autocommit=False)
+        sys.exit(0)
