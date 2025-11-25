@@ -9,9 +9,9 @@
 import os
 import socket
 
-import pkg_resources
+from importlib.metadata import version
 
-__version__ = pkg_resources.get_distribution('kser').version
+__version__ = version("kser")
 __hostname__ = socket.gethostname()
 
 # noinspection PyTypeChecker
