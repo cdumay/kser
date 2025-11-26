@@ -9,7 +9,7 @@
 
 import unittest
 
-from importlib_metadata import distributions
+from importlib.metadata import distributions
 
 
 class InstallTest(unittest.TestCase):
